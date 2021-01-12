@@ -9,7 +9,7 @@ import { HttpClient }			from '@angular/common/http';
 })
 export class AppComponent {
 	
-	public _version :string = '';
+	public _version :string = '[backend down]';
 	
 	constructor(private _http :HttpClient) { 
 		
