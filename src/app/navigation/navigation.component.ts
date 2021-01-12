@@ -29,9 +29,6 @@ export class NavigationComponent {
 	
 	ngOnInit() {
 
-		// TODO Test code!
-		this.showWait(false);
-		this.showSnackBar('Welcome to parayer!');
 	}
 	
 	showWait(show :boolean) :void {
