@@ -21,11 +21,11 @@
 }
 
 .logo {
-	background: url(parayer.svg);
+	background: url(parayer.svg) no-repeat;
 	width: 2.5em;
 	height: 2.5em;
 	margin: 0.5em;
-	display: inline;
+	display: block;
 }
 
 .main-cntnr-cntnr {

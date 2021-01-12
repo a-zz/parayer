@@ -1,3 +1,4 @@
+// TODO Code cleanup, method contracts, etc.
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -15,28 +16,37 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { HttpClientModule } from '@angular/common/http';
+
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    ActGridComponent,
-    ActAreaComponent,
-    ActGroupComponent,
-    ProjectComponent,
-    NavigationComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    LayoutModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatIconModule,
-    MatListModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+	declarations: [
+		AppComponent,
+		ActGridComponent,
+		ActAreaComponent,
+		ActGroupComponent,
+		ProjectComponent,
+		NavigationComponent
+	],
+	imports: [
+		BrowserModule,
+		AppRoutingModule,
+		BrowserAnimationsModule,
+		LayoutModule,
+		MatToolbarModule,
+		MatButtonModule,
+		MatSidenavModule,
+		MatIconModule,
+		MatListModule,
+		MatSnackBarModule,
+		HttpClientModule
+	],
+	providers: [
+		NavigationComponent
+	],
+	bootstrap: [
+		AppComponent
+	]
 })
 export class AppModule { }

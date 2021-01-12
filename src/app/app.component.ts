@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+// TODO Code cleanup, method contracts, etc.
+import { Component } 			from '@angular/core';
+import { HttpClient }			from '@angular/common/http';
 
 @Component({
 	selector: 'app-root',
@@ -7,9 +9,13 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
 	
-	title = 'parayer';
+	public _version :string = '';
 	
-	ngOnInit() {
+	constructor(private _http :HttpClient) { 
 		
+		let self = this;
+		this._http.get('/_info', {observe: 'body', responseType: 'json'}).subscribe((info :any) => {
+			self._version = info.version;
+		});
 	}
 }

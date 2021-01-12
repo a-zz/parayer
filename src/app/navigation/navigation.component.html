@@ -4,24 +4,24 @@
 		<mat-toolbar>
 			<i class="logo"></i>
 			<!-- TODO Icon made from <a href="http://www.onlinewebfonts.com/icon">Icon Fonts</a> is licensed by CC BY 3.0 -->
-			<br>
 			parayer
 		</mat-toolbar>
 		<mat-nav-list>
 			<a mat-list-item href="#"><mat-icon ariab-label="About me (aka my account)">person</mat-icon>&nbsp;About me</a>
+			<hr style="width: 50%">
 			<a mat-list-item href="#"><mat-icon ariab-label="Return to activity grid">table_chart</mat-icon>&nbsp;Activity grid</a>
 			<a mat-list-item href="#"><mat-icon ariab-label="Manage my preferences">build</mat-icon>&nbsp;Preferences</a>
 		</mat-nav-list>
-		<p style="font-size: 70%; text-align: center;">parayer v<span app-version></span></p>
+		<p style="font-size: 70%; text-align: center;">parayer v {{_app._version}}</p>
 	</mat-sidenav>
 	<mat-sidenav-content class="main-cntnr-cntnr">
 		<mat-toolbar color="primary">
 			<button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()" *ngIf="isHandset$ | async">
 				<mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
 			</button>
-			<span id="navigation-location"></span>
+			<span id="nav-location"></span>
 			<span class="mat-toolbar-spacer"></span>
-			<mat-icon class="blinking" id="wait-icon" aria-hidden="false" aria-label="Please wait...">hourglass_full</mat-icon>
+			<mat-icon class="blinking" id="nav-wait-icon" aria-hidden="false" aria-label="Please wait...">hourglass_full</mat-icon>
 		</mat-toolbar>
 		 <div class="main-cntnr">
 			<router-outlet></router-outlet>
