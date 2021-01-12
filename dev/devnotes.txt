@@ -1,0 +1,6 @@
+-- Version numbering schema --
+major.minor.rev
+ major: general version
+ minor: new features; db schema
+ rev: bugs, errata, code cleanup
+ 
