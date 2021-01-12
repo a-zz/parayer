@@ -17,7 +17,7 @@ const 	__retus__ 	= require("retus");		// HTTP client, synchronous
 const { v4: uuid } 	= require('uuid');		// UUID generator (for db-stored objects)
 
 const 	_appVer_ 	= require('./package.json').version;
-var 	_config_ 	= require('./server-config.json');
+var 	_config_ 	= require('./backend-config.json');
 const 	_log_ 		= require('simple-node-logger').createSimpleLogger(_config_.loggerOpts);
 
 /* *** Start-up procedure *** ******************************************************************************************************************************* */
@@ -28,6 +28,13 @@ if(_server_==null)
 else {
 
 	/* *** Service definitions *** ************************************************************************************************************************** */
+	/* Backend info service */
+	_server_.get('/_info', function(req, res) {
+		
+		_log_.info('Backend info request');
+		res.send({ "version": _appVer_ });
+	});
+	
 	/* User authentication service */
 	// TODO User auth to be implemented
 	_server_.get('/_usrauth', function(req, res) {

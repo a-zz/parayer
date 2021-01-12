@@ -1,0 +1,15 @@
+{
+	"httpPort": 3000,
+	"loggerOpts": {
+		"timestampFormat": "YYYY-MM-DD HH:mm:ss.SSS",
+		"level": "trace" 
+	},
+	"couchDb": {
+		"host": "192.168.56.101",
+		"port": 5984,
+		"db": "parayer",
+		"user": "admin",
+		"pwd": "couchdb",
+		"strict": true
+	}
+}
