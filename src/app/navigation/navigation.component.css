@@ -20,6 +20,27 @@
   flex: 1 1 auto;
 }
 
+.logo {
+	background: url(parayer.svg);
+	width: 2.5em;
+	height: 2.5em;
+	margin: 0.5em;
+	display: inline;
+}
+
+.main-cntnr-cntnr {
+	
+	overflow: hidden;
+}
+
+div.main-cntnr {
+	width: 100%;
+	height: 95vh;
+	margin: 0em;
+	padding: 5em;
+	overflow: auto;
+}
+
 /* *** FX & animations *** ************************************************** */
 .blinking {
     animation:blinkingText 1.2s infinite;
