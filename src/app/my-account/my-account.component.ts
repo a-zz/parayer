@@ -14,7 +14,7 @@ export class MyAccountComponent implements OnInit {
 	ngOnInit(): void {
 
 		// TODO Test code
-		this._nav.setLocation('My account');
+		this._nav.setLocation('My account', 'person');
 		this._nav.showWait(false);
 	}
 }

@@ -14,7 +14,7 @@ export class ActGridComponent implements OnInit {
 	ngOnInit(): void {
 
 		// TODO Test code
-		this._nav.setLocation('My activity');
+		this._nav.setLocation('My activity', 'table_chart');
 		this._nav.showWait(false);
 	}
 }

@@ -21,7 +21,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { MyAccountComponent } from './my-account/my-account.component';
 import { MyPreferencesComponent } from './my-preferences/my-preferences.component';
 
-
 @NgModule({
 	declarations: [
 		AppComponent,

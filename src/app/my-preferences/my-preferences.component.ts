@@ -14,7 +14,7 @@ export class MyPreferencesComponent implements OnInit {
 	ngOnInit(): void {
 
 		// TODO Test code
-		this._nav.setLocation('My account');
+		this._nav.setLocation('My account', 'build');
 		this._nav.showWait(false);
 	}
 }

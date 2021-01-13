@@ -1,5 +1,5 @@
 // TODO Code cleanup, method contracts, etc.
-import { AppComponent}	from '../app.component';
+import { AppComponent}			from '../app.component';
 import { BreakpointObserver } 	from '@angular/cdk/layout';
 import { Breakpoints } 			from '@angular/cdk/layout';
 import { Component } 			from '@angular/core';
@@ -7,6 +7,8 @@ import { map } 					from 'rxjs/operators';
 import { Observable } 			from 'rxjs';
 import { shareReplay } 			from 'rxjs/operators';
 import { MatSnackBar } 			from '@angular/material/snack-bar';
+import { Core }					from '../core.service';
+
 
 @Component({
 	selector: 'app-navigation',
@@ -15,6 +17,10 @@ import { MatSnackBar } 			from '@angular/material/snack-bar';
 })
 export class NavigationComponent {
 
+	public _locationIcon :string = '';
+	public _locationText :string = '';
+	public _waiting :boolean = true;
+
 	isHandset$: Observable<boolean> = this._breakpointObserver.observe(Breakpoints.Handset)
 		.pipe(
 			map(result => result.matches),
@@ -22,9 +28,10 @@ export class NavigationComponent {
 		);
 
 	constructor(
-		public _app :AppComponent,
-		private _breakpointObserver :BreakpointObserver, 
-		private _snackBar :MatSnackBar) { 
+			public _app :AppComponent,
+			private _breakpointObserver :BreakpointObserver,
+			private _snackBar :MatSnackBar) {
+				 
 	}
 	
 	ngOnInit() {
@@ -33,12 +40,14 @@ export class NavigationComponent {
 	
 	showWait(show :boolean) :void {
 		
-		(document.querySelector('#nav-wait-icon') as HTMLElement)!.style.display = show?'inline':'none';
+		this._waiting = show;
 	}
 	
-	setLocation(loctxt :string) :void {
+	setLocation(text :string, icon :string) :void {
 		
-		document.querySelector('#nav-location')!.innerHTML = loctxt;
+		// TODO Improve icon-text alignment (and -side-toggle button, when shown)
+		this._locationText = text;
+		this._locationIcon = icon;
 	}
 	
 	showSnackBar(txt :string) :void {
@@ -54,5 +63,10 @@ export class NavigationComponent {
 	goHome() :void {
 		
 		console.log('To be implemented!');
+	}
+	
+	getVersion() :string {
+		
+		return Core._version;
 	}
 }
