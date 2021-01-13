@@ -1,49 +1,52 @@
-// TODO Code cleanup, method contracts, etc.
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------
+// parayer :: AppModule
+// App root module
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ActGridComponent } from './act-grid/act-grid.component';
-import { ActAreaComponent } from './act-area/act-area.component';
-import { ActGroupComponent } from './act-group/act-group.component';
-import { ProjectComponent } from './project/project.component';
-import { NavigationComponent } from './navigation/navigation.component';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpClientModule } from '@angular/common/http';
+import { MatToolbarModule } from '@angular/material/toolbar';
+
+import { ActAreaComponent } from './act-area/act-area.component';
+import { ActGridComponent } from './act-grid/act-grid.component';
+import { ActGroupComponent } from './act-group/act-group.component';
+import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app-routing.module';
 import { MyAccountComponent } from './my-account/my-account.component';
 import { MyPreferencesComponent } from './my-preferences/my-preferences.component';
+import { NavigationComponent } from './navigation/navigation.component';
+import { ProjectComponent } from './project/project.component';
 
 @NgModule({
 	declarations: [
-		AppComponent,
-		ActGridComponent,
 		ActAreaComponent,
+		AppComponent,
+		ActGridComponent,		
 		ActGroupComponent,
-		ProjectComponent,
-		NavigationComponent,
 		MyAccountComponent,
-		MyPreferencesComponent
+		MyPreferencesComponent,
+		NavigationComponent,
+		ProjectComponent
 	],
 	imports: [
-		BrowserModule,
 		AppRoutingModule,
 		BrowserAnimationsModule,
+		BrowserModule,
+		HttpClientModule,		
 		LayoutModule,
-		MatToolbarModule,
 		MatButtonModule,
-		MatSidenavModule,
 		MatIconModule,
 		MatListModule,
+		MatSidenavModule,
 		MatSnackBarModule,
-		HttpClientModule
+		MatToolbarModule
 	],
 	providers: [
 		NavigationComponent
@@ -53,3 +56,4 @@ import { MyPreferencesComponent } from './my-preferences/my-preferences.componen
 	]
 })
 export class AppModule { }
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------

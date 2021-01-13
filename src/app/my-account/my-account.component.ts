@@ -1,6 +1,11 @@
-// TODO Code cleanup, method contracts, etc.
-import { Component, OnInit } from '@angular/core';
-import { NavigationComponent } from '../navigation/navigation.component';
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------
+// parayer :: ActGridComponent
+// My account (user info) management
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------
+import { Component } 			from '@angular/core';
+import { OnInit } 				from '@angular/core';
+
+import { NavigationComponent }	from '../navigation/navigation.component';
 
 @Component({
 	selector: 'app-my-account',
@@ -18,3 +23,4 @@ export class MyAccountComponent implements OnInit {
 		this._nav.showWait(false);
 	}
 }
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -3,29 +3,37 @@
 		[mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
 		<mat-toolbar>
 			<i class="logo"></i>
-			<!-- TODO Icon made from <a href="http://www.onlinewebfonts.com/icon">Icon Fonts</a> is licensed by CC BY 3.0 -->
+			<!-- TODO Attribution: Icon made from <a href="http://www.onlinewebfonts.com/icon">Icon Fonts</a> is licensed by CC BY 3.0 -->
 			parayer
 		</mat-toolbar>
 		<mat-nav-list>
-			<a mat-list-item href="/my-account"><mat-icon ariab-label="About me (aka my account)">person</mat-icon>&nbsp;My account</a>
+			<a mat-list-item href="/my-account">
+				<mat-icon ariab-label="About me (aka my account)">person</mat-icon>&nbsp;My account
+			</a>
 			<hr style="width: 75%; opacity: 0.12;">
-			<a mat-list-item href="/act-grid"><mat-icon ariab-label="Show my activity grid">table_chart</mat-icon>&nbsp;My activity</a>
-			<a mat-list-item href="/my-preferences"><mat-icon ariab-label="Manage my preferences">build</mat-icon>&nbsp;Preferences</a>
+			<a mat-list-item href="/act-grid">
+				<mat-icon ariab-label="Show my activity grid">table_chart</mat-icon>&nbsp;My activity
+			</a>
+			<a mat-list-item href="/my-preferences">
+				<mat-icon ariab-label="Manage my preferences">build</mat-icon>&nbsp;Preferences
+			</a>
 		</mat-nav-list>
 		<p style="font-size: 70%; text-align: center;">..:: version {{getVersion()}} ::..</p>
 	</mat-sidenav>
 	<mat-sidenav-content class="main-cntnr-cntnr">
 		<mat-toolbar color="primary">
-			<button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()" *ngIf="isHandset$ | async">
+			<button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
+				*ngIf="isHandset$ | async">
 				<mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
 			</button>
 			<div class="location-cntnr">
 				<mat-icon class="location-icon">{{_locationIcon}}</mat-icon>&nbsp;{{_locationText}}
 			</div>
 			<span class="mat-toolbar-spacer"></span>
-			<mat-icon class="blinking" id="nav-wait-icon" aria-hidden="false" aria-label="Please wait..." *ngIf="_waiting">hourglass_full</mat-icon>
+			<mat-icon class="blinking" id="nav-wait-icon" aria-hidden="false" aria-label="Please wait..."
+				*ngIf="_waiting">hourglass_full</mat-icon>
 		</mat-toolbar>
-		 <div class="main-cntnr">
+		<div class="main-cntnr">
 			<router-outlet></router-outlet>
 		</div>
 	</mat-sidenav-content>

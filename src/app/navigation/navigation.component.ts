@@ -1,14 +1,18 @@
-// TODO Code cleanup, method contracts, etc.
-import { AppComponent}			from '../app.component';
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------
+// parayer :: ActGridComponent
+// My account (user info) management
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------
+// TODO Method contracts missing
 import { BreakpointObserver } 	from '@angular/cdk/layout';
 import { Breakpoints } 			from '@angular/cdk/layout';
 import { Component } 			from '@angular/core';
 import { map } 					from 'rxjs/operators';
+import { MatSnackBar } 			from '@angular/material/snack-bar';
 import { Observable } 			from 'rxjs';
 import { shareReplay } 			from 'rxjs/operators';
-import { MatSnackBar } 			from '@angular/material/snack-bar';
-import { Core }					from '../core.service';
 
+import { AppComponent}			from '../app.component';
+import { Core }					from '../core.service';
 
 @Component({
 	selector: 'app-navigation',
@@ -33,11 +37,7 @@ export class NavigationComponent {
 			private _snackBar :MatSnackBar) {
 				 
 	}
-	
-	ngOnInit() {
-
-	}
-	
+		
 	showWait(show :boolean) :void {
 		
 		this._waiting = show;
@@ -70,3 +70,4 @@ export class NavigationComponent {
 		return Core._version;
 	}
 }
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------
