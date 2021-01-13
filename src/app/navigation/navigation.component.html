@@ -10,7 +10,7 @@
 			<a mat-list-item href="/my-account">
 				<mat-icon ariab-label="About me (aka my account)">person</mat-icon>&nbsp;My account
 			</a>
-			<hr style="width: 75%; opacity: 0.12;">
+			<mat-divider [inset]="true"></mat-divider>
 			<a mat-list-item href="/act-grid">
 				<mat-icon ariab-label="Show my activity grid">table_chart</mat-icon>&nbsp;My activity
 			</a>
@@ -18,6 +18,7 @@
 				<mat-icon ariab-label="Manage my preferences">build</mat-icon>&nbsp;Preferences
 			</a>
 		</mat-nav-list>
+		<mat-divider [inset]="true"></mat-divider>
 		<p style="font-size: 70%; text-align: center;">..:: version {{getVersion()}} ::..</p>
 	</mat-sidenav>
 	<mat-sidenav-content class="main-cntnr-cntnr">

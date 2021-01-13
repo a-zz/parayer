@@ -1,0 +1,140 @@
+div {
+	padding: 0.2em;
+	border-radius: 0.1em;
+}
+
+.grid-cntnr {
+	display: table;
+	min-width: 95%;
+	max-width: 95%;
+	min-height: 90%;
+	max-height: 90%;
+	padding: 1em;
+	overflow: hidden;
+}
+
+.grid-header-top {
+	display: table-row;	
+	background: white; /* TODO background color primary */
+}
+
+.grid-header-cell {
+	display: table-cell;
+	text-align: right;
+}
+
+.act-header-label {
+	text-align: left;
+	vertical-align: bottom;
+	font-size: 120%;
+	font-weight: bold;
+}
+
+.act-control {
+	vertical-align: bottom;	
+	border-right: solid 1px grey;	
+}
+
+.effort-cell {
+	vertical-align: bottom;	
+	border: solid 1px transparent;
+	border-right: solid 1px grey;	
+}
+
+.effort-cell-active {
+	vertical-align: bottom;	
+	border: solid 1px transparent;
+	border-right: solid 1px grey;
+	transition: border 0.5s;
+}
+
+.effort-cell-active:hover {
+	vertical-align: bottom;
+	border: solid 1px darkorange;		
+}
+
+.sum-label {
+	vertical-align: bottom;	
+	font-weight: bold;
+	color: grey;
+}
+
+.effort-sum {
+	vertical-align: bottom;
+	font-weight: bold;
+	color: grey;	
+}
+
+.grid-effort-row-group {
+	display: table-row-group; /* TODO Set to block in order to scroll; requires computing of col widths in JS */
+	overflow: scroll;
+	min-height: 30vh;
+	max-height: 40vh;
+}
+
+.grid-effort-row {
+	display: table-row;
+}
+
+.grid-effort-row:hover {
+	background: #eeeeee;
+}
+
+.grid-act-row-header {
+	display: table-cell;
+}
+
+.grid-act-row-cell {
+	display: table-cell;
+	text-align: right;
+}
+
+.grid-header-middle-cntnr {
+	display: table-row-group;
+}
+
+.grid-header-middle {
+	display: table-row;
+	background: white; /* TODO background color primary */
+}
+
+.grid-hourly-slots {
+	display: table-row-group; /* TODO Set to block in order to scroll; requires computing of col widths in JS */
+	overflow: scroll;
+	min-height: 30vh;
+	max-height: 40vh;
+}
+
+.grid-hourly-slot-row {
+	display: table-row;
+}
+
+.grid-empty-cell {
+	display: table-cell;
+}
+
+.time-slot-label-left {
+	font-size: 80%;
+	display: table-cell;
+	border-top: 1px dashed grey;
+	border-right: 1px solid grey;
+	vertical-align: top;
+	text-align: right;
+}
+
+.time-slot-label-right {
+	font-size: 80%;
+	display: table-cell;
+	border-top: 1px dashed grey;
+	vertical-align: top;
+	text-align: left;
+}
+
+.time-slot {
+	display: table-cell;
+	border-right: 1px solid grey;
+	border-top: 1px dashed grey;
+}
+.grid-time-slot {
+	display: table-cell;
+}
