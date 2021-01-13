@@ -67,7 +67,7 @@ export class NavigationComponent {
 	
 	getVersion() :string {
 		
-		return Core._version;
+		return Core.getVersion();
 	}
 }
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------

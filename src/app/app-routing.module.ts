@@ -2,6 +2,7 @@
 // parayer :: AppRoutingModule
 // App rotuing management module
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
+// TODO Consider route transition animations (as per https://angular.io/guide/route-animations), or even single-page operation 
 import { NgModule } 			from '@angular/core';
 import { RouterModule } 		from '@angular/router';
 import { Routes } 				from '@angular/router';
