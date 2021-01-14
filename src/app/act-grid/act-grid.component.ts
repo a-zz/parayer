@@ -4,11 +4,11 @@
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 import { Component } 			from '@angular/core';
 import { HttpClient } 			from '@angular/common/http';
-import { AfterViewChecked } 				from '@angular/core';
+import { AfterViewChecked } 	from '@angular/core';
 
 import * as _ 					from 'lodash';
 
-import { Core, DateTimeUtil }	from '../core.service';
+import { Core, DateTimeUtil, UI } from '../core.service';
 import { NavigationComponent }	from '../navigation/navigation.component';
 
 @Component({
@@ -31,27 +31,29 @@ export class ActGridComponent implements AfterViewChecked {
 	ngAfterViewChecked() :void {
 		
 		this.fixGridLayout();
+		window.addEventListener('resize', this.fixGridLayout);
 	}
 	
 	getActivity() :void {
 
-		// TODO Response data from db should be typed, although it's guaranteed to be conformant by backend schema	
+		// TODO Perhaps response data from db should be typed, although it's guaranteed to be conformant by backend schema	
+		// TODO As per the manual, data-fetching should be done by a specific service
 		let myActList :Array<Activity> = [];
 		let usrId = Core.getLoggedUser().id;
-		this._http.get(`/_data/_design/activity/_view/activity-area-by-assign-usr?key="${usrId}"`, { "observe": "body", "responseType": "json"}).
-			subscribe((actAreasData :any) => { 
+		this._http.get(`/_data/_design/activity/_view/activity-area-by-assign-usr?key="${usrId}"`, 
+			{ "observe": "body", "responseType": "json"}).subscribe((actAreasData :any) => { 
 				let areas :Array<Activity> = [];
 				_.forEach(_.sortBy(actAreasData.rows, ['value.name']), (row :any) => {
 					areas.push(new Activity(row));
 				});	
-				this._http.get(`/_data/_design/activity/_view/activity-group-by-assign-usr?key="${usrId}"`, { "observe": "body", "responseType": "json"}).
-					subscribe((actGroupsData :any) => { 
+				this._http.get(`/_data/_design/activity/_view/activity-group-by-assign-usr?key="${usrId}"`, 
+					{ "observe": "body", "responseType": "json"}).subscribe((actGroupsData :any) => { 
 						let groups :Array<Activity> = [];
 						_.forEach(_.sortBy(actGroupsData.rows, ['value.name']), (row :any) => {
 							groups.push(new Activity(row));
 						});	
-						this._http.get(`/_data/_design/activity/_view/project-by-assign-usr?key="${usrId}"`, { "observe": "body", "responseType": "json"}).
-							subscribe((projectsData :any) => {
+						this._http.get(`/_data/_design/activity/_view/project-by-assign-usr?key="${usrId}"`, 
+							{ "observe": "body", "responseType": "json"}).subscribe((projectsData :any) => {
 								let projects :Array<Activity> = [];
 								_.forEach(_.sortBy(projectsData.rows, ['value.name']), function(row :any) {
 									projects.push(new Activity(row));
@@ -77,26 +79,16 @@ export class ActGridComponent implements AfterViewChecked {
 							});
 					});
 			});
-		/*		
-					$scope.$$postDigest(function() {
-						// TODO Improve this: there's a flash before grid layout
-						$scope.gridLayout();
-						document.querySelector('div.mdc-data-table#act-grid-cntnr-main').style.visibility = 'visible';
-					});
-					parayer.ui.showWait(false);
-				});		
-			});
-		});
-		*/
 	}
 	
 	fixGridLayout() {
 		
-		let sbw = this.getScrollbarWidth();
+		// TODO Responsive layout for handsets required
+		let sbw = UI.getScrollbarWidth();
 		let twdth = (document.querySelector('div#act-grid') as HTMLElement)!.offsetWidth;
 		//(document.querySelector('div.grid-hourly-slots') as HTMLElement)!.style.width = `${twdth}px`;
 		let cols = ['c01','c02', 'c03', 'c04']
-		let wdthpc = [.20, .05, .10, .05];
+		let wdthpc = [.15, .04, .11, .04];
 		for(let i = 0; i<cols.length; i++) {
 			_.forEach(document.querySelectorAll(`.${cols[i]}`), (o :Element) => {
 				let c = (o as HTMLElement);
@@ -107,33 +99,18 @@ export class ActGridComponent implements AfterViewChecked {
 			});
 		}
 	}
-	
-	// TODO Should be global
-	getScrollbarWidth() :number {
-
-		const outer = document.createElement('div');
-		outer.style.visibility = 'hidden';
-		outer.style.overflow = 'scroll'; 
-		//outer.style.msOverflowStyle = 'scrollbar'; 
-		document.body.appendChild(outer);
-		const inner = document.createElement('div');
-		outer.appendChild(inner);
-		const scrollbarWidth = (outer.offsetWidth - inner.offsetWidth);
-		outer!.parentNode!.removeChild(outer);
-		return scrollbarWidth;
-	}
 }
 
 export class Activity {
 			
-	id :string; // TODO Define type uuid
+	id :string;
 	type :string;
 	name :string;
 	descr :string;
-	parent :string|null; // TODO Define type uuid
-	url :string; // TODO Should be properly typed, maybe
+	parent :string|null;
+	url :string; 
 			
-	constructor(d :any) { // TODO d (response data from db) should be typed, although is guaranteed to be conformant by backend schema
+	constructor(d :any) { // TODO Perhaps d (response data from db) should be typed, although is guaranteed to be conformant by backend schema
 		
 		this.id = d.id;
 		this.type = d.value.type;
@@ -142,15 +119,15 @@ export class Activity {
 		switch(d.value.type) {
 		case 'ActGrp':
 			this.parent = d.value.actArea;
-			this.url = `/act-group/${this.id}`;
+			this.url = `/act-group?id=${this.id}`;
 			break;
 		case 'Project':
 			this.parent = d.value.actGrp;
-			this.url = `/project/${this.id}`;
+			this.url = `/project?id=${this.id}`;
 			break;
 		default:
 			this.parent = null;
-			this.url = `/act-area/${this.id}`;
+			this.url = `/act-area?id=${this.id}`;
 		} 
 	}
 }

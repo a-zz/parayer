@@ -1,8 +1,8 @@
 <div id="act-grid" class="grid-cntnr mat-elevation-z8">
-	<div class="grid-header-top mat-elevation-z2">
+	<div class="grid-header-top mat-elevation-z4">
 		<div class="grid-header-cell c01 act-header-label">Activity</div>
 		<div class="grid-header-cell c02 act-control">
-			<button mat-icon-button color="primary" class="icon-mini" aria-label="New activity area" title="New activity area">
+			<button mat-icon-button color="primary" aria-label="New activity area" title="New activity area">
 				<mat-icon>add_library</mat-icon>
 			</button>
 		</div>
@@ -13,37 +13,50 @@
 		<div class="grid-effort-row" *ngFor="let activity of myActList">
 			<div class="grid-act-row-header c01">
 				<span class="act-label-{{activity.type=='ActArea'?'area':activity.type=='ActGrp'?'group':'project'}}">
-					<a class="act-link" href="{{activity.url}}">{{activity.name}}</a>
+					<button mat-icon-button  aria-label="Show more" title="Show more" *ngIf="activity.type!='Project'">
+						<mat-icon>expand_more</mat-icon>
+					</button>
+					<a class="act-link" href="{{activity.url}}" title="{{activity.descr}}">{{activity.name}}</a>
 				</span>
 			</div>
 			<div class="grid-act-row-cell   c02 act-control">
 				<button mat-icon-button color="primary" *ngIf="activity.type!='Project'" 
-					title="New {{activity.type=='ActGrp'?'activity group':'project'}}"
-					aria-label="New {{activity.type=='ActGrp'?'activity group':'project'}}">
+					title="New {{activity.type=='ActGrp'?'activity group':'project'}}"> <!--  TODO can't set aria-label? -->
 					<mat-icon>add</mat-icon>
 				</button>
 			</div>
 			<div class="grid-act-row-cell   c03 effort-cell {{activity.type=='Project'?'effort-cell-active':''}}" *ngFor="let d of currentWeek">
 				<div class="effort-control" *ngIf="activity.type=='Project'">
-					(+) (-) (x)
+					<span class="act-effort-control-mini" title="Add effort unit" aria-label="Add effort unit">+</span>
+					<span class="act-effort-control-mini" title="Subtract effort unit" aria-label="Subtract effort unit">-</span>
+					<span class="act-effort-control-mini" title="Reset effort" aria-label="Reset effort unit">x</span>
 				</div>
-				<div class="effort-value">00:00</div>
+				<div class="effort-value {{activity.type=='ActArea'||activity.type=='ActGrp'?'effort-sum':''}}">00:00</div>
 			</div>
 			<div class="grid-act-row-cell   c04 effort-sum">00:00</div>
 		</div>
 	</div>	
-	<div class="grid-header-middle-cntnr mat-elevation-z2">
+	<div class="grid-header-middle-cntnr mat-elevation-z4">
 		<div class="grid-header-middle">
 			<div class="grid-header-cell c01"></div>
 			<div class="grid-header-cell c02 sum-label">total</div>
 			<div class="grid-header-cell c03 effort-sum" *ngFor="let d of currentWeek">00:00</div>
 			<div class="grid-header-cell c04 effort-sum sbph">00:00</div>		
 		</div>	
+		<br>
 		<div class="grid-header-middle">		
 			<div class="grid-header-cell c01"></div>
-			<div class="grid-header-cell c02 calendar-control">&lt;</div>
+			<div class="grid-header-cell c02 calendar-control">
+				<button mat-icon-button  aria-label="Go to previous week" title="Go to previous week">
+					<mat-icon>skip_previous</mat-icon>
+				</button>			
+			</div>
 			<div class="grid-header-cell c03 day-label {{d.today?'today':''}}" *ngFor="let d of currentWeek">{{d.dt}}<br>{{d.dmt}}</div>
-			<div class="grid-header-cell c04 calendar-control sbph">&gt;</div>
+			<div class="grid-header-cell c04 calendar-control sbph">
+				<button mat-icon-button  aria-label="Go to next week" title="Go to next week">
+					<mat-icon>skip_next</mat-icon>
+				</button>			
+			</div>
 		</div>
 		<div class="grid-header-middle daily-slot">
 			<div class="grid-empty-cell c01"></div>

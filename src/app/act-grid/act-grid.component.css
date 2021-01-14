@@ -35,26 +35,23 @@ div {
 	vertical-align: bottom;
 	font-size: 120%;
 	font-weight: bold;
+	overflow: hidden;
 }
 
-.act-label-area {
+span.act-label-area {
 	size: 120%;
 	font-weight: bold;
+	overflow: hidden;
 }
 
-.act-label-group {
+span.act-label-group {
 	padding-left: 1em;
-	padding-right: -1em;
+	overflow: hidden;
 }
 
-.act-label-project {
+span.act-label-project {
 	font-style: italic;
-	padding-left: 2em;
-	padding-right: -2em;
-}
-
-button.icon-mini {
-	
+	padding-left: 4em;
 }
 
 a.act-link {
@@ -82,11 +79,6 @@ a.act-link:hover {
 	border: solid 1px transparent;
 	border-right: solid 1px grey;
 	transition: border 0.5s;
-}
-
-.effort-cell-active:hover {
-	vertical-align: bottom;
-	border: solid 1px darkorange;	 /* TODO Should be accent */	
 }
 
 .sum-label {
@@ -127,8 +119,33 @@ a.act-link:hover {
 	text-align: right;
 }
 
+.grid-act-row-cell:hover > .effort-control {
+	opacity: 0.8;
+}
+
 .effort-control {
 	float: left;
+	padding-left: 1em;
+	opacity: 0.05;
+}
+
+span.act-effort-control-mini {
+	width: 1em;
+	height: auto;
+	text-align: center;
+	height: 1em;
+	padding: 0.2em;
+	border: 1px solid grey;
+	border-radius: 0.3em;
+	cursor: pointer;
+	font-weight: bold;
+	font-family: monospace;;
+	margin-left: 0.2em;
+	margin-right: 0.2em;
+}
+
+span.act-effort-control-mini:hover {
+	border: 1px solid darkorange; /* TODO Should be accent */
 }
 
 .effort-value {
@@ -183,7 +200,7 @@ a.act-link:hover {
 
 .time-slot {
 	display: table-cell;
-	height: 3em;
+	height: 4em;
 	border-right: 1px solid grey;
 	border-bottom: 1px dashed grey;
 }
