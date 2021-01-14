@@ -1,10 +1,9 @@
 div {
-	padding: 0.2em;
 	border-radius: 0.1em;
 }
 
 .grid-cntnr {
-	display: table;
+	display: block;
 	min-width: 95%;
 	max-width: 95%;
 	min-height: 90%;
@@ -23,11 +22,48 @@ div {
 	text-align: right;
 }
 
+.day-label {
+	font-weight: bold;	
+}
+
+.today {
+	color: darkorange; /* TODO Should be accent */
+}
+
 .act-header-label {
 	text-align: left;
 	vertical-align: bottom;
 	font-size: 120%;
 	font-weight: bold;
+}
+
+.act-label-area {
+	size: 120%;
+	font-weight: bold;
+}
+
+.act-label-group {
+	padding-left: 1em;
+	padding-right: -1em;
+}
+
+.act-label-project {
+	font-style: italic;
+	padding-left: 2em;
+	padding-right: -2em;
+}
+
+button.icon-mini {
+	
+}
+
+a.act-link {
+	color: unset;
+	text-decoration: none;
+}
+
+a.act-link:hover {	
+	text-decoration: underline dotted darkorange 0.1em; /* TODO Should be accent */
 }
 
 .act-control {
@@ -50,7 +86,7 @@ div {
 
 .effort-cell-active:hover {
 	vertical-align: bottom;
-	border: solid 1px darkorange;		
+	border: solid 1px darkorange;	 /* TODO Should be accent */	
 }
 
 .sum-label {
@@ -66,14 +102,15 @@ div {
 }
 
 .grid-effort-row-group {
-	display: table-row-group; /* TODO Set to block in order to scroll; requires computing of col widths in JS */
-	overflow: scroll;
+	display: block; 
+	overflow-y: scroll;
 	min-height: 30vh;
 	max-height: 40vh;
 }
 
 .grid-effort-row {
 	display: table-row;
+	height: 2em;
 }
 
 .grid-effort-row:hover {
@@ -82,11 +119,20 @@ div {
 
 .grid-act-row-header {
 	display: table-cell;
+	vertical-align: bottom;
 }
 
 .grid-act-row-cell {
 	display: table-cell;
 	text-align: right;
+}
+
+.effort-control {
+	float: left;
+}
+
+.effort-value {
+	float: right;
 }
 
 .grid-header-middle-cntnr {
@@ -99,8 +145,8 @@ div {
 }
 
 .grid-hourly-slots {
-	display: table-row-group; /* TODO Set to block in order to scroll; requires computing of col widths in JS */
-	overflow: scroll;
+	display: block;
+	overflow-y: scroll;
 	min-height: 30vh;
 	max-height: 40vh;
 }
@@ -113,10 +159,15 @@ div {
 	display: table-cell;
 }
 
+.calendar-control {
+	text-align: center;
+	vertical-align: middle;
+}
+
 .time-slot-label-left {
 	font-size: 80%;
 	display: table-cell;
-	border-top: 1px dashed grey;
+	border-bottom: 1px dashed grey;
 	border-right: 1px solid grey;
 	vertical-align: top;
 	text-align: right;
@@ -125,16 +176,22 @@ div {
 .time-slot-label-right {
 	font-size: 80%;
 	display: table-cell;
-	border-top: 1px dashed grey;
+	border-bottom: 1px dashed grey;
 	vertical-align: top;
 	text-align: left;
 }
 
 .time-slot {
 	display: table-cell;
+	height: 3em;
 	border-right: 1px solid grey;
-	border-top: 1px dashed grey;
+	border-bottom: 1px dashed grey;
 }
+
+.daily {
+	border-bottom: unset;
+}
+
 .grid-time-slot {
 	display: table-cell;
 }

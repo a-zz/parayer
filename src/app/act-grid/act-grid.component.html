@@ -1,104 +1,63 @@
-<div class="grid-cntnr mat-elevation-z8">
+<div id="act-grid" class="grid-cntnr mat-elevation-z8">
 	<div class="grid-header-top mat-elevation-z2">
-		<div class="grid-header-cell col00 act-header-label">Activity</div>
-		<div class="grid-header-cell col01 act-control">(+)</div>
-		<div class="grid-header-cell col02 day-label">mon<br>11 Jan</div>
-		<div class="grid-header-cell col03 day-label">tue<br>12 Jan</div>
-		<div class="grid-header-cell col04 day-label">wed<br>13 Jan</div>
-		<div class="grid-header-cell col05 day-label">thu<br>14 Jan</div>
-		<div class="grid-header-cell col06 day-label">fri<br>15 Jan</div>
-		<div class="grid-header-cell col07 day-label">sat<br>16 Jan</div>
-		<div class="grid-header-cell col08 day-label">sun<br>17 Jan</div>
-		<div class="grid-header-cell col09 sum-label">total</div>
+		<div class="grid-header-cell c01 act-header-label">Activity</div>
+		<div class="grid-header-cell c02 act-control">
+			<button mat-icon-button color="primary" class="icon-mini" aria-label="New activity area" title="New activity area">
+				<mat-icon>add_library</mat-icon>
+			</button>
+		</div>
+		<div class="grid-header-cell c03 day-label {{d.today?'today':''}}" *ngFor="let d of currentWeek">{{d.dt}}<br>{{d.dmt}}</div>
+		<div class="grid-header-cell c04 sum-label sbph">total</div>
 	</div>
 	<div class="grid-effort-row-group">
-		<div class="grid-effort-row">
-			<div class="grid-act-row-header col00 act-label">Development</div>
-			<div class="grid-act-row-cell   col01 act-control">(+)</div>
-			<div class="grid-act-row-cell   col02 effort-cell">0:00</div>
-			<div class="grid-act-row-cell   col03 effort-cell">0:00</div>
-			<div class="grid-act-row-cell   col04 effort-cell">0:00</div>
-			<div class="grid-act-row-cell   col05 effort-cell">0:00</div>
-			<div class="grid-act-row-cell   col06 effort-cell">0:00</div>
-			<div class="grid-act-row-cell   col07 effort-cell">0:00</div>
-			<div class="grid-act-row-cell   col08 effort-cell">0:00</div>
-			<div class="grid-act-row-cell   col09 effort-sum">0:00</div>
-		</div>
-		<div class="grid-effort-row">
-			<div class="grid-act-row-header col00 act-label">Research</div>
-			<div class="grid-act-row-cell   col01 act-control">(+)</div>
-			<div class="grid-act-row-cell   col02 effort-cell">0:00</div>
-			<div class="grid-act-row-cell   col03 effort-cell">0:00</div>
-			<div class="grid-act-row-cell   col04 effort-cell">0:00</div>
-			<div class="grid-act-row-cell   col05 effort-cell">0:00</div>
-			<div class="grid-act-row-cell   col06 effort-cell">0:00</div>
-			<div class="grid-act-row-cell   col07 effort-cell">0:00</div>
-			<div class="grid-act-row-cell   col08 effort-cell">0:00</div>
-			<div class="grid-act-row-cell   col09 effort-sum">0:00</div>
-		</div>	
-		<div class="grid-effort-row">
-			<div class="grid-act-row-header col00 act-label">parayer</div>
-			<div class="grid-act-row-cell   col01 act-control"></div>
-			<div class="grid-act-row-cell   col02 effort-cell-active">0:00</div>
-			<div class="grid-act-row-cell   col03 effort-cell-active">0:00</div>
-			<div class="grid-act-row-cell   col04 effort-cell-active">0:00</div>
-			<div class="grid-act-row-cell   col05 effort-cell-active">0:00</div>
-			<div class="grid-act-row-cell   col06 effort-cell-active">0:00</div>
-			<div class="grid-act-row-cell   col07 effort-cell-active">0:00</div>
-			<div class="grid-act-row-cell   col08 effort-cell-active">0:00</div>
-			<div class="grid-act-row-cell   col09 effort-sum">0:00</div>
+		<div class="grid-effort-row" *ngFor="let activity of myActList">
+			<div class="grid-act-row-header c01">
+				<span class="act-label-{{activity.type=='ActArea'?'area':activity.type=='ActGrp'?'group':'project'}}">
+					<a class="act-link" href="{{activity.url}}">{{activity.name}}</a>
+				</span>
+			</div>
+			<div class="grid-act-row-cell   c02 act-control">
+				<button mat-icon-button color="primary" *ngIf="activity.type!='Project'" 
+					title="New {{activity.type=='ActGrp'?'activity group':'project'}}"
+					aria-label="New {{activity.type=='ActGrp'?'activity group':'project'}}">
+					<mat-icon>add</mat-icon>
+				</button>
+			</div>
+			<div class="grid-act-row-cell   c03 effort-cell {{activity.type=='Project'?'effort-cell-active':''}}" *ngFor="let d of currentWeek">
+				<div class="effort-control" *ngIf="activity.type=='Project'">
+					(+) (-) (x)
+				</div>
+				<div class="effort-value">00:00</div>
+			</div>
+			<div class="grid-act-row-cell   c04 effort-sum">00:00</div>
 		</div>
 	</div>	
 	<div class="grid-header-middle-cntnr mat-elevation-z2">
 		<div class="grid-header-middle">
-			<div class="grid-header-cell col00"></div>
-			<div class="grid-header-cell col01 sum-label">sum</div>
-			<div class="grid-header-cell col02 effort-sum">0:00</div>
-			<div class="grid-header-cell col03 effort-sum">0:00</div>
-			<div class="grid-header-cell col04 effort-sum">0:00</div>
-			<div class="grid-header-cell col05 effort-sum">0:00</div>
-			<div class="grid-header-cell col06 effort-sum">0:00</div>
-			<div class="grid-header-cell col07 effort-sum">0:00</div>
-			<div class="grid-header-cell col08 effort-sum">0:00</div>
-			<div class="grid-header-cell col09 effort-sum">0:00</div>		
+			<div class="grid-header-cell c01"></div>
+			<div class="grid-header-cell c02 sum-label">total</div>
+			<div class="grid-header-cell c03 effort-sum" *ngFor="let d of currentWeek">00:00</div>
+			<div class="grid-header-cell c04 effort-sum sbph">00:00</div>		
 		</div>	
 		<div class="grid-header-middle">		
-			<div class="grid-header-cell col00"></div>
-			<div class="grid-header-cell col01 calendar-control">&lt;</div>
-			<div class="grid-header-cell col02 day-label">mon<br>11 Jan</div>
-			<div class="grid-header-cell col03 day-label">tue<br>12 Jan</div>
-			<div class="grid-header-cell col04 day-label">wed<br>13 Jan</div>
-			<div class="grid-header-cell col05 day-label">thu<br>14 Jan</div>
-			<div class="grid-header-cell col06 day-label">fri<br>15 Jan</div>
-			<div class="grid-header-cell col07 day-label">sat<br>16 Jan</div>
-			<div class="grid-header-cell col08 day-label">sun<br>17 Jan</div>
-			<div class="grid-header-cell col09 calendar-control">&gt;</div>
+			<div class="grid-header-cell c01"></div>
+			<div class="grid-header-cell c02 calendar-control">&lt;</div>
+			<div class="grid-header-cell c03 day-label {{d.today?'today':''}}" *ngFor="let d of currentWeek">{{d.dt}}<br>{{d.dmt}}</div>
+			<div class="grid-header-cell c04 calendar-control sbph">&gt;</div>
 		</div>
 		<div class="grid-header-middle daily-slot">
-			<div class="grid-empty-cell col00"></div>
-			<div class="grid-empty-cell col01"></div>
-			<div class="time-slot col02"></div>
-			<div class="time-slot col03"></div>
-			<div class="time-slot col04"></div>
-			<div class="time-slot col05"></div>
-			<div class="time-slot col06"></div>
-			<div class="time-slot col07"></div>
-			<div class="time-slot col08"></div>
-			<div class="grid-empty-cell col09"></div>		
+			<div class="grid-empty-cell c01"></div>
+			<div class="grid-empty-cell c02"></div>
+			<div class="time-slot c03 daily" *ngFor="let d of currentWeek"></div>
+			<div class="grid-empty-cell c04 sbph"></div>		
 		</div>
 	</div>	
 	<div class="grid-hourly-slots">
 		<div class="grid-hourly-slot-row" *ngFor="let h of ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00']">
-			<div class="grid-empty-cell col00"></div>
-			<div class="time-slot-label-left col01">{{h}}</div>
-			<div class="time-slot col02"></div>
-			<div class="time-slot col03"></div>
-			<div class="time-slot col04"></div>
-			<div class="time-slot col05"></div>
-			<div class="time-slot col06"></div>
-			<div class="time-slot col07"></div>
-			<div class="time-slot col08"></div>
-			<div class="time-slot-label-right col09">{{h}}</div>
+			<div class="grid-empty-cell c01"></div>
+			<div class="time-slot-label-left c02">{{h}}</div>
+			<div class="time-slot c03 hourly" *ngFor="let d of currentWeek"></div>
+			<div class="time-slot-label-right c04 ">{{h}}</div>
 		</div>
 	</div>
 </div>

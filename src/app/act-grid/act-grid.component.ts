@@ -4,11 +4,11 @@
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 import { Component } 			from '@angular/core';
 import { HttpClient } 			from '@angular/common/http';
-import { OnInit } 				from '@angular/core';
+import { AfterViewChecked } 				from '@angular/core';
 
 import * as _ 					from 'lodash';
 
-import { Core }					from '../core.service';
+import { Core, DateTimeUtil }	from '../core.service';
 import { NavigationComponent }	from '../navigation/navigation.component';
 
 @Component({
@@ -16,19 +16,21 @@ import { NavigationComponent }	from '../navigation/navigation.component';
 	templateUrl: './act-grid.component.html',
 	styleUrls: ['./act-grid.component.css']
 })
-export class ActGridComponent implements OnInit {
+export class ActGridComponent implements AfterViewChecked {
 
 	myActList :Array<Activity> = []; 
-	gridData : Array<any> = [];
+	currentWeek :Array<any>;
 	
 	constructor(private _http :HttpClient, private _nav: NavigationComponent) { 
 		
-		this._nav.setLocation('My activity', 'table_chart');
+		this.currentWeek = DateTimeUtil.computeWeek(new Date());
 		this.getActivity();
+		this._nav.setLocation('My activity', 'table_chart');		
 	}
+	
+	ngAfterViewChecked() :void {
 		
-	ngOnInit() :void {
-
+		this.fixGridLayout();
 	}
 	
 	getActivity() :void {
@@ -71,12 +73,6 @@ export class ActGridComponent implements OnInit {
 									});
 								});	
 								this.myActList = myActList;
-								// TODO Test code
-								this.gridData = [
-									{ "activity": myActList[0].name, "precol": "", "moncol": "0:00", "tuecol": "0:00", "wedcol": "0:00", "thucol": "0:00", "fricol": "0:00", "satcol": "0:00", "suncol": "0:00", "postcol": "0:00" },
-									{ "activity": myActList[1].name, "precol": "", "moncol": "0:00", "tuecol": "0:00", "wedcol": "0:00", "thucol": "0:00", "fricol": "0:00", "satcol": "0:00", "suncol": "0:00", "postcol": "0:00" },
-									{ "activity": myActList[2].name, "precol": "", "moncol": "0:00", "tuecol": "0:00", "wedcol": "0:00", "thucol": "0:00", "fricol": "0:00", "satcol": "0:00", "suncol": "0:00", "postcol": "0:00" }
-								];
 								this._nav.showWait(false);
 							});
 					});
@@ -94,9 +90,38 @@ export class ActGridComponent implements OnInit {
 		*/
 	}
 	
-	// TODO Test code
-	displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-  dataSource = ELEMENT_DATA;	
+	fixGridLayout() {
+		
+		let sbw = this.getScrollbarWidth();
+		let twdth = (document.querySelector('div#act-grid') as HTMLElement)!.offsetWidth;
+		//(document.querySelector('div.grid-hourly-slots') as HTMLElement)!.style.width = `${twdth}px`;
+		let cols = ['c01','c02', 'c03', 'c04']
+		let wdthpc = [.20, .05, .10, .05];
+		for(let i = 0; i<cols.length; i++) {
+			_.forEach(document.querySelectorAll(`.${cols[i]}`), (o :Element) => {
+				let c = (o as HTMLElement);
+				c.style.width = `${(wdthpc[i]*twdth)}px`;
+				c.style.maxWidth = `${(wdthpc[i]*twdth)}px`;
+				if(_.indexOf(c.classList, 'sbph')!=-1)
+					c.style.paddingRight = `${sbw}px`;
+			});
+		}
+	}
+	
+	// TODO Should be global
+	getScrollbarWidth() :number {
+
+		const outer = document.createElement('div');
+		outer.style.visibility = 'hidden';
+		outer.style.overflow = 'scroll'; 
+		//outer.style.msOverflowStyle = 'scrollbar'; 
+		document.body.appendChild(outer);
+		const inner = document.createElement('div');
+		outer.appendChild(inner);
+		const scrollbarWidth = (outer.offsetWidth - inner.offsetWidth);
+		outer!.parentNode!.removeChild(outer);
+		return scrollbarWidth;
+	}
 }
 
 export class Activity {
@@ -106,6 +131,7 @@ export class Activity {
 	name :string;
 	descr :string;
 	parent :string|null; // TODO Define type uuid
+	url :string; // TODO Should be properly typed, maybe
 			
 	constructor(d :any) { // TODO d (response data from db) should be typed, although is guaranteed to be conformant by backend schema
 		
@@ -116,34 +142,16 @@ export class Activity {
 		switch(d.value.type) {
 		case 'ActGrp':
 			this.parent = d.value.actArea;
+			this.url = `/act-group/${this.id}`;
 			break;
 		case 'Project':
 			this.parent = d.value.actGrp;
+			this.url = `/project/${this.id}`;
 			break;
 		default:
 			this.parent = null;
+			this.url = `/act-area/${this.id}`;
 		} 
 	}
 }
-
-// TODO Test code
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-];
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
