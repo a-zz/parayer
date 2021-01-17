@@ -12,7 +12,7 @@ import { Observable } 			from 'rxjs';
 import { shareReplay } 			from 'rxjs/operators';
 
 import { AppComponent}			from '../app.component';
-import { Core }					from '../core.service';
+import { CoreService }			from '../core.services';
 
 @Component({
 	selector: 'app-navigation',
@@ -34,8 +34,9 @@ export class NavigationComponent {
 	constructor(
 			public _app :AppComponent,
 			private _breakpointObserver :BreakpointObserver,
+			private _csrv :CoreService,
 			private _snackBar :MatSnackBar) {
-				 
+			
 	}
 		
 	showWait(show :boolean) :void {
@@ -67,7 +68,7 @@ export class NavigationComponent {
 	
 	getVersion() :string {
 		
-		return Core.getVersion();
+		return this._csrv.getVersion();
 	}
 }
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------

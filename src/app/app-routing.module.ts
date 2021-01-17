@@ -19,7 +19,7 @@ const routes: Routes = [
 	{ path: 'act-group', 		component: ActGroupComponent },
 	{ path: 'my-account', 		component: MyAccountComponent },
 	{ path: 'my-preferences',	component: MyPreferencesComponent },	
-	{ path: 'project', 			component: ProjectComponent },
+	{ path: 'project/:id',		component: ProjectComponent },
 	{ path: '',  				redirectTo: '/act-grid', pathMatch: 'full' },
 	{ path: '**', 				component: ActGridComponent }
 ];

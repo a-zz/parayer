@@ -8,10 +8,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { LayoutModule } from '@angular/cdk/layout';
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { ActAreaComponent } from './act-area/act-area.component';
@@ -19,6 +22,7 @@ import { ActGridComponent } from './act-grid/act-grid.component';
 import { ActGroupComponent } from './act-group/act-group.component';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { CoreService } from './core.services';
 import { MyAccountComponent } from './my-account/my-account.component';
 import { MyPreferencesComponent } from './my-preferences/my-preferences.component';
 import { NavigationComponent } from './navigation/navigation.component';
@@ -42,10 +46,13 @@ import { ProjectComponent } from './project/project.component';
 		HttpClientModule,		
 		LayoutModule,
 		MatButtonModule,
+		MatCardModule,
+		MatChipsModule,
 		MatIconModule,
 		MatListModule,
 		MatSidenavModule,
 		MatSnackBarModule,
+		MatTabsModule,
 		MatToolbarModule
 	],
 	providers: [

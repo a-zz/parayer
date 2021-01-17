@@ -1,1 +1,41 @@
-<p>project works!</p>
+<mat-tab-group (selectedTabChange)="loadTabContent($event.index)">
+	<mat-tab label="GENERAL">
+		[TODO General]
+	</mat-tab>
+	<mat-tab label="NOTES">
+		[TODO Notes]
+	</mat-tab>
+	<mat-tab label="TASKS">
+		[TODO Tasks]
+	</mat-tab>
+	<mat-tab label="FILES">
+		[TODO Files]
+	</mat-tab>
+	<mat-tab label="APPOINTMENTS">
+		[TODO Appointments]
+	</mat-tab>
+	<mat-tab label="HISTORY">
+		<div class="tab-content" *ngIf="project!=null">
+			<div class="tab-content-control-cntnr">
+				<div class="tab-content-control-cntnr-left">
+					Found {{project!.history.length}} history entries
+				</div>
+				<div class="tab-content-control-cntnr-right">
+					(filter here)
+				</div>
+			</div>
+			<br>
+			<div class="card-list-cntnr">
+				<mat-card class="hist-entry" *ngFor="let h of project!.history"  id="project-hist-entry-{{h._id}}">
+					<mat-card-content>
+						<mat-chip class="refchip" id="{{h.usr}}">...</mat-chip>&nbsp;
+						{{h.summary}}&nbsp;
+						<mat-chip class="refchip"*ngFor="let r of h.relatedTo" id="{{r}}">...</mat-chip>&nbsp;
+						({{h.timestamp.toLocaleString()}})
+					</mat-card-content>
+				</mat-card>
+			</div>
+		</div>
+	</mat-tab>
+</mat-tab-group>
+

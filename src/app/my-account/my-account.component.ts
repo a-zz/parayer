@@ -14,12 +14,14 @@ import { NavigationComponent }	from '../navigation/navigation.component';
 })
 export class MyAccountComponent implements OnInit {
 
-	constructor(private _nav: NavigationComponent) { }
+	constructor(private _nav: NavigationComponent) { 
+		
+		this._nav.setLocation('My account', 'person');
+	}
 
 	ngOnInit(): void {
 
 		// TODO Test code
-		this._nav.setLocation('My account', 'person');
 		this._nav.showWait(false);
 	}
 }

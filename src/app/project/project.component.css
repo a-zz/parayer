@@ -1,0 +1,20 @@
+div.tab-content {
+	padding: 1em;
+	overflow-y: auto;
+	margin-left: auto;
+	margin-right: 1em;
+	height: 80%;
+}
+
+.tab-content-control-cntnr-left {
+	float: left;
+}
+
+.tab-content-control-cntnr-right {
+	float: right;	
+}
+
+.hist-entry {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}

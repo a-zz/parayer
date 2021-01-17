@@ -4,11 +4,12 @@
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 import { Component } 			from '@angular/core';
 import { HttpClient } 			from '@angular/common/http';
-import { AfterViewChecked } 	from '@angular/core';
+import { AfterContentChecked } 	from '@angular/core';
 
 import * as _ 					from 'lodash';
 
-import { Core, DateTimeUtil, UI } from '../core.service';
+import { UserService } from '../core.services';
+import { DateTimeUtil, UI } from '../core.utils';
 import { NavigationComponent }	from '../navigation/navigation.component';
 
 @Component({
@@ -16,22 +17,23 @@ import { NavigationComponent }	from '../navigation/navigation.component';
 	templateUrl: './act-grid.component.html',
 	styleUrls: ['./act-grid.component.css']
 })
-export class ActGridComponent implements AfterViewChecked {
+export class ActGridComponent implements AfterContentChecked {
 
 	myActList :Array<Activity> = []; 
 	currentWeek :Array<any>;
 	
-	constructor(private _http :HttpClient, private _nav: NavigationComponent) { 
+	constructor(private _http :HttpClient, private _nav :NavigationComponent) { 
 		
 		this.currentWeek = DateTimeUtil.computeWeek(new Date());
 		this.getActivity();
 		this._nav.setLocation('My activity', 'table_chart');		
+		window.addEventListener('resize', this.fixGridLayout);
+		
 	}
 	
-	ngAfterViewChecked() :void {
+	ngAfterContentChecked() :void {
 		
 		this.fixGridLayout();
-		window.addEventListener('resize', this.fixGridLayout);
 	}
 	
 	getActivity() :void {
@@ -39,7 +41,7 @@ export class ActGridComponent implements AfterViewChecked {
 		// TODO Perhaps response data from db should be typed, although it's guaranteed to be conformant by backend schema	
 		// TODO As per the manual, data-fetching should be done by a specific service
 		let myActList :Array<Activity> = [];
-		let usrId = Core.getLoggedUser().id;
+		let usrId = UserService.getLoggedUser().id;
 		this._http.get(`/_data/_design/activity/_view/activity-area-by-assign-usr?key="${usrId}"`, 
 			{ "observe": "body", "responseType": "json"}).subscribe((actAreasData :any) => { 
 				let areas :Array<Activity> = [];
@@ -119,15 +121,15 @@ export class Activity {
 		switch(d.value.type) {
 		case 'ActGrp':
 			this.parent = d.value.actArea;
-			this.url = `/act-group?id=${this.id}`;
+			this.url = `act-group`;
 			break;
 		case 'Project':
 			this.parent = d.value.actGrp;
-			this.url = `/project?id=${this.id}`;
+			this.url = `project`;
 			break;
 		default:
 			this.parent = null;
-			this.url = `/act-area?id=${this.id}`;
+			this.url = `act-area`;
 		} 
 	}
 }

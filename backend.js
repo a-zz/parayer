@@ -322,7 +322,7 @@ function initDbConnection() {
 /* *** Data (schema-based) validation *** ******************************************************************************************************************* */
 function dbSchemaValidation(couchDbQueryString, data) {
 
-	const ajv = new __ajv__({ allErrors: true });
+	const ajv = new __ajv__.default({ allErrors: true });
 	const obj = JSON.parse(data);
 	let schemaFile = './schema/';
 	switch(obj.type) {

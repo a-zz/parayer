@@ -16,7 +16,7 @@
 					<button mat-icon-button  aria-label="Show more" title="Show more" *ngIf="activity.type!='Project'">
 						<mat-icon>expand_more</mat-icon>
 					</button>
-					<a class="act-link" href="{{activity.url}}" title="{{activity.descr}}">{{activity.name}}</a>
+					<a class="act-link" [routerLink]="['/', activity.url, activity.id ]" title="{{activity.descr}}">{{activity.name}}</a>
 				</span>
 			</div>
 			<div class="grid-act-row-cell   c02 act-control">
