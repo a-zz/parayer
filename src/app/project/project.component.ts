@@ -2,20 +2,24 @@
 // parayer :: ProjectComponent
 // Project management tool
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
-import { ActivatedRoute }
-	from '@angular/router';
+import { HttpClient, HttpHeaders } 
+	from '@angular/common/http';
 import { AfterContentChecked, AfterViewChecked, Component }
 	from '@angular/core';
-import { HttpClient } 
-	from '@angular/common/http';
-
+import { FormControl, FormGroupDirective, NgForm, Validators } 
+	from '@angular/forms';
+import { ErrorStateMatcher } 
+	from '@angular/material/core';	
+import { ActivatedRoute, Router }
+	from '@angular/router';	
+			
 import * as _ 						
 	from 'lodash';
 
-import { DateTimeUtil, History }
-	from '../core.utils'
 import { RefChipsService }
-	from '../core.services'
+	from '../core.services';
+import { DateTimeUtil, History }
+	from '../core.utils';
 import { NavigationComponent }
 	from '../navigation/navigation.component';
 
@@ -25,18 +29,26 @@ import { NavigationComponent }
 	styleUrls: 		['./project.component.css']
 })
 export class ProjectComponent implements AfterViewChecked, AfterContentChecked {
-
+	
 	project :Project|null = null;
 
 	constructor(
 			private _route :ActivatedRoute, 
 			private _http :HttpClient, 
 			private _nav :NavigationComponent, 
-			private _rch :RefChipsService) {
+			private _rch :RefChipsService,
+			private _router :Router) {
 
+		this._nav.showWait(true);
 		let objDataUrl :string = `/_data/${this._route.snapshot.paramMap.get('id')}`;
 		this._http.get(objDataUrl, { "observe": "body", "responseType": "json" }).subscribe((data) => {
 			this.project = new Project(data);
+			this.fcName.setValue(this.project.name);
+			this.fcDescr.setValue(this.project.descr);
+			this.fcDateStart.setValue(this.project.dateStart);
+			this.fcDateEnd.setValue(this.project.dateEnd);
+			this.fcEffortUnit.setValue(this.project.effortUnit);
+			this.fcEffortCap.setValue(this.project.effortCap);
 			this._nav.setLocation(`Project :: ${this.project.name}`, 'map');
 			this._nav.showWait(false);
 		});
@@ -84,6 +96,49 @@ export class ProjectComponent implements AfterViewChecked, AfterContentChecked {
 	}
 	
 	// -- GENERAL tab --
+	fcName :FormControl = new FormControl('', [Validators.required]);;
+	fcDescr :FormControl = new FormControl('');
+	fcDateStart :FormControl = new FormControl('');
+	fcDateEnd :FormControl = new FormControl('');
+	fcEffortUnit :FormControl = new FormControl('', [Validators.required, Validators.pattern('[0-9]+:[0-9]{2}')]);
+	fcEffortCap = new FormControl('', [Validators.pattern('[0-9]+:[0-9]{2}')]);
+	fcErr :ErrorStateMatcher = new ProjectFormErrorStateMatcher();	
+	
+	formIsValid() :boolean {
+	
+		return !(this.fcErr.isErrorState(this.fcName, null) ||
+			this.fcErr.isErrorState(this.fcDescr, null) ||
+			this.fcErr.isErrorState(this.fcDateStart, null) ||
+			this.fcErr.isErrorState(this.fcDateEnd, null) ||
+			this.fcErr.isErrorState(this.fcEffortUnit, null) ||
+			this.fcErr.isErrorState(this.fcEffortCap, null));
+	}
+	
+	save() :void {
+		
+		if(!this.formIsValid())
+			this._nav.showSnackBar('Errors found, can\'t save!');
+		else {
+			let p = this.project!;
+			p.name = this.fcName.value;
+			p.descr = this.fcDescr.value;
+			p.dateStart = this.fcDateStart.value;
+			p.dateEnd = this.fcDateEnd.value;
+			p.effortUnit = this.fcEffortUnit.value;
+			p.effortCap = this.fcEffortCap.value;
+			let dbObjUrl = `/_data/${p._id}`; 
+			// TODO Figure out how to parse errors
+			this._http.put(dbObjUrl, p.stringify(), { "headers": new HttpHeaders({ "Content-Type": "application/json"})})
+				.subscribe((putResp :any) => {
+				if(putResp.ok) {
+					History.make(`Updated project info`, p._id, null, 60 * 60 * 1000, this._http, this._nav);
+					this._router.navigateByUrl('/act-grid');
+				}
+				else
+					this._nav.showSnackBar(`Oops! ${putResp.reason}`); 
+			});
+		}
+	}
 	
 	// -- NOTES tab --
 	
@@ -128,6 +183,7 @@ export class ProjectComponent implements AfterViewChecked, AfterContentChecked {
 		
 		let self = this;
 		let filtersAdded :Array<string> = []; 
+		this.historyDateFilterOptions = [];
 		this.historyDateFilterOptions.push({"value": "", "text": "At any time", order: 999})
 		_.forEach(this.project?.history, function(h :any) {
 			h .dateFilterLabels = [];
@@ -187,134 +243,69 @@ export class ProjectComponent implements AfterViewChecked, AfterContentChecked {
 	}	
 }
 
-export class Project { // TODO Perhaps d (response data from db) should be typed, although is guaranteed to be conformant by backend schema
+export class ProjectFormErrorStateMatcher implements ErrorStateMatcher {
+	
+	isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
 		
-		_id :string;
-		_rev : string;
-		type :string;
-		name :string;
-		descr :string;
-		usrAdminList :Array<String>;
-		usrAssignList :Array<String>;
-		actGrp :string;
-		dateStart :Date|null;
-		dateEnd :Date|null;
-		effortUnit :string;
-		effortCap :string|null;
-		history :Array<History> = [];
+		const isSubmitted = form && form.submitted;
+    	return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  	}
+}
+
+export class Project { 
 		
-		constructor(d :any) {
-			
-			this._id = d._id;
-			this._rev = d._rev;
-			this.type = d.type;
-			this.name = d.name;
-  			this.descr = d.descr;
-			this.usrAdminList = d.usrAdminList;
-			this.usrAssignList = d.usrAssignList;
-			this.actGrp = d.actGrp;
-			this.dateStart = d.dateStart!=''?new Date(Date.parse(d.dateStart)):null;
-			this.dateEnd = d.dateEnd!=''?new Date(Date.parse(d.dateEnd)):null;
-			this.effortUnit = d.effortUnit;
-			this.effortCap = d.effortCap;
-		}
+	_id :string;
+	_rev : string;
+	type :string;
+	name :string;
+	descr :string;
+	usrAdminList :Array<String>;
+	usrAssignList :Array<String>;
+	actGrp :string;
+	dateStart :Date|null;
+	dateEnd :Date|null;
+	effortUnit :string;
+	effortCap :string|null;
+	history :Array<History> = [];
+	
+	constructor(d :any) {
 		
-		stringify() {
-		
-			 let o = {
-				"_id": this._id,
-				"_rev": this._rev,
-				"type": this.type,
-				"name": this.name,
-	  			"descr": this.descr,
-				"usrAdminList": this.usrAdminList,
-				"usrAssignList": this.usrAssignList,
-				"actGrp": this.actGrp,
-				"dateStart": this.dateStart!=null?this.dateStart.toISOString():'',
-				"dateEnd": this.dateEnd!=null?this.dateEnd.toISOString():'',
-				"effortUnit": this.effortUnit,
-	  			"effortCap": this.effortCap
-			}; 
-            return JSON.stringify(o);
-		}
-		
-		refresh(rev :string) {
-			
-			this._rev = rev;	
-		}
+		this._id = d._id;
+		this._rev = d._rev;
+		this.type = d.type;
+		this.name = d.name;
+		this.descr = d.descr;
+		this.usrAdminList = d.usrAdminList;
+		this.usrAssignList = d.usrAssignList;
+		this.actGrp = d.actGrp;
+		this.dateStart = d.dateStart!=''?new Date(Date.parse(d.dateStart)):null;
+		this.dateEnd = d.dateEnd!=''?new Date(Date.parse(d.dateEnd)):null;
+		this.effortUnit = d.effortUnit;
+		this.effortCap = d.effortCap;
 	}
 	
-/*    class VProjectTask {
+	stringify() {
 	
-        constructor(d) {
+		 let o = {
+			"_id": this._id,
+			"_rev": this._rev,
+			"type": this.type,
+			"name": this.name,
+  			"descr": this.descr,
+			"usrAdminList": this.usrAdminList,
+			"usrAssignList": this.usrAssignList,
+			"actGrp": this.actGrp,
+			"dateStart": this.dateStart!=null?this.dateStart.toISOString():'',
+			"dateEnd": this.dateEnd!=null?this.dateEnd.toISOString():'',
+			"effortUnit": this.effortUnit,
+  			"effortCap": this.effortCap
+		}; 
+        return JSON.stringify(o);
+	}
 	
-            if (typeof(d)==='object') {
-				// Object from db
-                this._id = d._id;
-                this._rev = d._rev;
-				this.type = d.type;
-                this.summary = d.summary;
-                this.descr = d.descr;
-                this.pc = `${d.pc}`;
-                this.dateDue = d.dateDue!=''?new Date(Date.parse(d.dateDue)):null;
-                this.created = {
-                    "usr": d.created.usr,
-                    "date": new Date(Date.parse(d.created.date))
-                };
-                this.updated = {
-                	"usr": d.updated.usr,
-                    "date": new Date(Date.parse(d.updated.date))
-                };
-                this.project = $scope.project._id;
-                this.usrAssignList = d.usrAssignList;
-            }
-            else {
-                // New project task
-				let now = new Date();
-                this._id = d;
-                this.type = 'ProjectTask';
-                this.summary = 'New task';
-                this.descr = '';
-                this.pc = '0';
-                this.dateDue = null;
-                this.created = { "usr": parayer.auth.getUsrId(), "date": now };
-                this.updated = { "usr": parayer.auth.getUsrId(), "date": now };
-                this.project = $scope.project._id;
-                this.usrAssignList = [parayer.auth.getUsrId()];
-            }
-		}
-
-		setUpdateInfo() {
-				
-			// TODO Maybe shouldn't' udpate for a given time-windoww after task creation (as they're usually inmmediately updated after that and thus is useless info)
-			this.updated = {
-				"usr": parayer.auth.getUsrId(),
-				"date": new Date()
-			}				
-		}
-
-        stringify() {
-	
-            let o = {
-                "_id": this._id,
-				"_rev": this._rev,
-                "type": this.type,
-                "summary": this.summary,
-                "descr": this.descr,
-                "pc": parseInt(this.pc),
-                "dateDue": this.dateDue != null ? this.dateDue.toISOString() : '',
-                "created": { "usr": this.created.usr, "date": this.created.date.toISOString() },
-                "updated": { "usr": this.updated.usr, "date": this.updated.date.toISOString() },
-                "project": this.project,
-                "usrAssignList": this.usrAssignList
-            };
-            return JSON.stringify(o);
-        }
-
-		refresh(rev) {
-				
-			this.changed = false;
-			this._rev = rev;
-		}
-    }*/
+	refresh(rev :string) {
+		
+		this._rev = rev;	
+	}
+}
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -2,9 +2,10 @@
 // parayer :: ActGridComponent
 // Activity grid (and main) component
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
-import { Component } 			from '@angular/core';
-import { HttpClient } 			from '@angular/common/http';
-import { AfterContentChecked } 	from '@angular/core';
+import { HttpClient }
+	from '@angular/common/http';
+import { AfterContentChecked, Component } 	
+	from '@angular/core';
 
 import * as _ 					from 'lodash';
 
@@ -24,11 +25,12 @@ export class ActGridComponent implements AfterContentChecked {
 	
 	constructor(private _http :HttpClient, private _nav :NavigationComponent) { 
 		
+		this._nav.showWait(true);
 		this.currentWeek = DateTimeUtil.computeWeek(new Date());
 		this.getActivity();
 		this._nav.setLocation('My activity', 'table_chart');		
 		window.addEventListener('resize', this.fixGridLayout);
-		
+		// TODO Remove event listener when leaving view
 	}
 	
 	ngAfterContentChecked() :void {

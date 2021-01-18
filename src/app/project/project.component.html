@@ -1,6 +1,63 @@
 <mat-tab-group id="project-tabs-cntnr" (selectedTabChange)="loadTabContent($event.index)">
 	<mat-tab label="GENERAL">
-		[TODO General]
+		<div class="tab-content" *ngIf="project!=null">
+			<form (submit)="save()">
+				<mat-form-field appearance="fill" class="project-form-field">
+					<mat-label id="project-name-label">Project name</mat-label>
+					<input matInput placeholder="Project name" aria-labelledby="project-name-label" 
+						[formControl]="fcName" [errorStateMatcher]="fcErr">
+					<mat-hint>(required)</mat-hint>
+				    <mat-error *ngIf="fcName.hasError('required')">
+	      				A project name is required
+	    			</mat-error>
+				</mat-form-field>
+				<br>
+				<mat-form-field appearance="fill" class="project-form-field">
+					<mat-label id="project-descr-label">Project description</mat-label>
+					<textarea matInput placeholder="Project description" aria-labelledby="project-descr-label" 
+						[formControl]="fcDescr" [errorStateMatcher]="fcErr"></textarea>
+				</mat-form-field>
+				<br>
+				<mat-form-field appearance="fill" class="project-form-field-50pc">
+	  				<mat-label id="project-date-start-label">Start date</mat-label>
+	  				<input matInput [matDatepicker]="pickerStart" aria-labelledby="project-date-start-label"
+	  					[formControl]="fcDateStart" [errorStateMatcher]="fcErr">
+	  				<mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+	  				<mat-datepicker #pickerStart></mat-datepicker>
+				</mat-form-field>&nbsp;
+				<mat-form-field appearance="fill" class="project-form-field-50pc">
+	  				<mat-label id="project-date-end-label">End date</mat-label>
+	  				<input matInput [matDatepicker]="pickerEnd" aria-labelledby="project-date-end-label"
+	  					[formControl]="fcDateEnd" [errorStateMatcher]="fcErr">
+	  				<mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+	  				<mat-datepicker #pickerEnd></mat-datepicker>
+				</mat-form-field>
+				<br>
+				<mat-form-field appearance="fill" class="project-form-field-50pc">
+					<mat-label id="project-effort-unit-label">Effort unit</mat-label>
+					<input matInput placeholder="00:00" aria-labelledby="project-effort-unit-label"
+						[formControl]="fcEffortUnit" [errorStateMatcher]="fcErr"> 
+					<mat-hint>(required)</mat-hint>
+					<mat-error *ngIf="fcEffortUnit.hasError('required')">
+	      				The project's effort unit is required
+	    			</mat-error>
+				    <mat-error *ngIf="fcEffortUnit.hasError('pattern')">
+	      				Wrong time format! (should be 0:00)
+	    			</mat-error>
+				</mat-form-field>&nbsp;
+				<mat-form-field appearance="fill" class="project-form-field-50pc">
+					<mat-label id="project-effort-cap-label">Effort cap</mat-label>
+					<input matInput placeholder="00:00" aria-labelledby="project-effort-cap-label"
+						[formControl]="fcEffortCap" [errorStateMatcher]="fcErr">
+				    <mat-error *ngIf="fcEffortCap.hasError('pattern')">
+	      				Wrong time format! (should be 0:00)
+	    			</mat-error>
+				</mat-form-field>
+				<br><br>
+				<button type="submit" mat-raised-button color="primary">SAVE</button>&nbsp;
+				<a mat-button routerLink="/act-grid">CANCEL</a>
+			</form>
+		</div>
 	</mat-tab>
 	<mat-tab label="NOTES">
 		[TODO Notes]

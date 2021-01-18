@@ -2,17 +2,23 @@
 // parayer :: Core service
 // App global-scope service and utilities
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
-import { HttpClient } 				from '@angular/common/http';
-import { Injectable } 				from '@angular/core';
+import { HttpClient, HttpHeaders } 				
+	from '@angular/common/http';
+import { Injectable } 				
+	from '@angular/core';
 
-import * as _ 						from 'lodash';
+import * as _ 						
+	from 'lodash';
 
-import { UserService }				from './core.services'
-import { NavigationComponent }		from './navigation/navigation.component';
+import { UserService }				
+	from './core.services'
+import { NavigationComponent }		
+	from './navigation/navigation.component';
+
 
 export class DateTimeUtil {
 
-	static computeWeek(selectedDate: Date) {
+	static computeWeek(selectedDate: Date) :Array<any> {
 
 		let week = [];
 		for (let d = 1 - selectedDate.getDay(); d <= 7 - selectedDate.getDay(); d++) {
@@ -31,7 +37,7 @@ export class DateTimeUtil {
 	}
 
 	// See: https://stackoverflow.com/a/6117889s
-	static getWeekNumber(d: Date) {
+	static getWeekNumber(d: Date) :[number, number] {
 
 		d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
 		d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
@@ -40,40 +46,38 @@ export class DateTimeUtil {
 		return [d.getUTCFullYear(), weekNo];
 	}
 
-	static diff(d1: Date, d2: Date) {
+	static diff(d1: Date, d2: Date) :number{
 
-		let u1 = Date.UTC(d1.getFullYear(), d1.getMonth(), d1.getDate(), d1.getHours(), d1.getMinutes(), d1.getSeconds(), d1.getMilliseconds());
-		let u2 = Date.UTC(d2.getFullYear(), d2.getMonth(), d2.getDate(), d2.getHours(), d2.getMinutes(), d2.getSeconds(), d2.getMilliseconds());
-		return u1 - u2;
+		return d1.getTime() - d2.getTime();
 	}
 
-	static isToday(d: Date) {
+	static isToday(d: Date) :boolean {
 
 		return new Date().toLocaleDateString() == d.toLocaleDateString();
 	}
 
-	static isYesterday(d: Date) {
+	static isYesterday(d: Date) :boolean {
 
 		let y = new Date();
 		y.setDate(new Date().getDate() - 1);
 		return y.toLocaleDateString() == d.toLocaleDateString();
 	}
 
-	static isThisWeek(d: Date) {
+	static isThisWeek(d: Date) :boolean {
 
 		let tw = DateTimeUtil.getWeekNumber(new Date());
 		let dw = DateTimeUtil.getWeekNumber(d);
 		return tw[0] == dw[0] && tw[1] == dw[1];
 	}
 
-	static isLastWeek(d: Date) {
+	static isLastWeek(d: Date) :boolean {
 
 		let tw = DateTimeUtil.getWeekNumber(new Date());
 		let dw = DateTimeUtil.getWeekNumber(d);
 		return (tw[0] == dw[0] && tw[1] == dw[1] + 1) || (tw[0] == dw[0] + 1 && tw[1] == 1);
 	}
 
-	static isThisMonth(d: Date) {
+	static isThisMonth(d: Date) :boolean {
 
 		let tm1 = new Date(); tm1.setDate(1); tm1.setHours(0); tm1.setMinutes(0); tm1.setSeconds(0);
 		let dm1 = new Date(d.getFullYear(), d.getMonth(), 1);
@@ -81,7 +85,7 @@ export class DateTimeUtil {
 		return tm1.toLocaleDateString() == dm1.toLocaleDateString();
 	}
 
-	static isLastMonth(d: Date) {
+	static isLastMonth(d: Date) :boolean {
 
 		let lm1;
 		let t = new Date();
@@ -149,7 +153,7 @@ export class History {
 		return p;
 	}
 
-	static make(summary :string, attachedTo :string, relatedTo :string, aggregate :number|null, http :HttpClient, nav :NavigationComponent) {
+	static make(summary :string, attachedTo :string, relatedTo :string|null, aggregate :number|null, http :HttpClient, nav :NavigationComponent) {
 
 		if (aggregate == null) {
 			http.get('/_uuid', { "observe": "body", "responseType": "json" }).subscribe((data :any) => {
@@ -163,19 +167,22 @@ export class History {
 					"timestamp": new Date()
 				});
 				let dbObjUrl = `/_data/${e._id}`;
-				http.put(dbObjUrl, e.stringify()).subscribe((putResp :any) => {
-					if (putResp.status == 200) {
-						if (!putResp.data.ok)
-							nav.showSnackBar(`History saving failed! ${putResp.data.reason}`);
-					}
-					else
-						nav.showSnackBar('History saving failed! Contact your system admin');
+				http.put(dbObjUrl, e.stringify(), { "headers": new HttpHeaders({ "Content-Type": "application/json"})}).subscribe((putResp :any) => {
+					if(!putResp.ok)
+						nav.showSnackBar(`History saving failed! ${putResp.reason}`);
 				});
 			});
 		}
 		else {
-			History.getFor(attachedTo, http).then((h) => {
-				h = _.filter(h, { "usr": UserService.getLoggedUser().id, "relatedTo": relatedTo });
+			History.getFor(attachedTo, http).then((h :any) => {
+				h = _.filter(h, function(o) {
+					if(o.usr!=UserService.getLoggedUser().id)
+						return false;
+					else if(relatedTo==null)
+						return o.relatedTo==null || o.relatedTo.length==0;
+					else
+						return false;
+				});
 				let now = new Date();
 				h = _.filter(h, function(o) {
 					return DateTimeUtil.diff(now, o.timestamp) <= aggregate;
@@ -186,17 +193,16 @@ export class History {
 					h = _.sortBy(h, ['timestamp']);
 					// TODO Improve summary on aggregation (figure out how)
 					History.make(`${h[0].summary}`, attachedTo, relatedTo, null, http, nav);
-					for (let i = 0; i < h.length; i++) {
-						let dbObjUrl = `/_data/${h[i]._id}`;
-						http.delete(`${dbObjUrl}?rev=${h[i]._rev}`);
-					}
+					_.forEach(h, function(o) {
+						let dbObjUrl = `/_data/${o._id}?rev=${o._rev}`;
+						http.delete(`${dbObjUrl}`, {}).subscribe((data) => { /* Nothing to do here */ });
+					});
 				}
 			});
 		}
 	}
 }
 
-// TODO Not actually working as singleton service, not injected at app startup
 @Injectable({ providedIn: 'root' })
 export class RefChips {
 	

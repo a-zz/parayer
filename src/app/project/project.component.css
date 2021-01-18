@@ -21,6 +21,16 @@
 	float: right;	
 }
 
+.project-form-field {
+	width: 50%;
+	margin-bottom: 1.5em;
+}
+
+.project-form-field-50pc {
+	width: 24%;
+	margin-bottom: 1.5em;
+}
+
 .card-list-cntnr {
 	margin-top: 4em;
 	margin-bottom: 1em;
