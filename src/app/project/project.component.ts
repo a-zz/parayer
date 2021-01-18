@@ -2,20 +2,27 @@
 // parayer :: ProjectComponent
 // Project management tool
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
-import { ActivatedRoute }		from '@angular/router';
-import { AfterContentChecked } 	from '@angular/core';
-import { AfterViewChecked } 	from '@angular/core';
-import { Component } 			from '@angular/core';
-import { HttpClient } 			from '@angular/common/http';
+import { ActivatedRoute }
+	from '@angular/router';
+import { AfterContentChecked, AfterViewChecked, Component }
+	from '@angular/core';
+import { HttpClient } 
+	from '@angular/common/http';
 
-import { History }				from '../core.utils'
-import { RefChipsService }		from '../core.services'
-import { NavigationComponent } 	from '../navigation/navigation.component';
+import * as _ 						
+	from 'lodash';
+
+import { DateTimeUtil, History }
+	from '../core.utils'
+import { RefChipsService }
+	from '../core.services'
+import { NavigationComponent }
+	from '../navigation/navigation.component';
 
 @Component({
-	selector: 'app-project',
-	templateUrl: './project.component.html',
-	styleUrls: ['./project.component.css']
+	selector:		'app-project',
+	templateUrl: 	'./project.component.html',
+	styleUrls: 		['./project.component.css']
 })
 export class ProjectComponent implements AfterViewChecked, AfterContentChecked {
 
@@ -65,13 +72,8 @@ export class ProjectComponent implements AfterViewChecked, AfterContentChecked {
 				let self = this;
 				this._nav.showWait(true);
 				History.getFor(this.project._id, this._http).then(function(h) {
-					//this.computeHistoryDateFilters(h);
 					self.project!.history = h;
-					self._rch.fillInAll(self._http);				
-					/*$scope.$$postDigest(function() {
-						parayer.refchips.fillInAll($http);
-					});
-					$scope.$apply(); // TODO Why is this necessary???*/
+					self.computeHistoryDateFilters();				
 					self._nav.showWait(false);
 				});
 			}
@@ -80,6 +82,109 @@ export class ProjectComponent implements AfterViewChecked, AfterContentChecked {
 	
 		}
 	}
+	
+	// -- GENERAL tab --
+	
+	// -- NOTES tab --
+	
+	// -- TASKS tab --
+	
+	// -- FILES tab --
+	
+	// -- APPOINTMENTS tab --
+	
+	// -- HISTORY tab -- 
+	historyTextFilter :string = '';
+	historyDateFilter :string = '';
+	historyDateFilterOptions :Array<{"value": string, "text": string, order: number}> = [];
+	historyFilteredOutEntries :number = 0;
+	
+	setHistoryTextFilter(e :Event) :void {
+	
+		this.historyTextFilter = (e.target as HTMLInputElement).value;
+	}
+	
+	filterHistory() :void {
+		
+		// TODO Text filter should also work on refchips content
+		this.historyFilteredOutEntries = 0;
+		let textFilter = this.historyTextFilter.toUpperCase();
+		if(this.project!=null && this.project.history!=null) {
+			let self = this;
+			_.forEach(this.project.history, function(h) {
+				let entryCntnr = document.querySelector(`#project-hist-entry-${h._id}`) as HTMLElement;
+				if(h.summary.toUpperCase().indexOf(textFilter)!=-1 &&
+						(self.historyDateFilter=='' || h.dateFilterLabels.indexOf(self.historyDateFilter)!=-1))
+					entryCntnr.style.display = '';
+				else {
+					entryCntnr.style.display = 'none';
+					self.historyFilteredOutEntries++;
+				}
+			});
+		}
+	}
+	
+	computeHistoryDateFilters() :void {
+		
+		let self = this;
+		let filtersAdded :Array<string> = []; 
+		this.historyDateFilterOptions.push({"value": "", "text": "At any time", order: 999})
+		_.forEach(this.project?.history, function(h :any) {
+			h .dateFilterLabels = [];
+			if(DateTimeUtil.isToday(h.timestamp)) {
+				h.dateFilterLabels.push('today');
+				if(filtersAdded.indexOf('today')==-1) {
+					filtersAdded.push('today');
+					self.historyDateFilterOptions.push({"value": "today", "text": "Today", order: 0});
+				}
+			}
+			if(DateTimeUtil.isYesterday(h.timestamp)) {
+				h.dateFilterLabels.push('yesterday');
+				if(filtersAdded.indexOf('yesterday')==-1) {
+					filtersAdded.push('yesterday');
+					self.historyDateFilterOptions.push({"value": "yesterday", "text": "Yesterday", order: -1});
+				}
+			}
+			if(DateTimeUtil.isThisWeek(h.timestamp)) {
+				h.dateFilterLabels.push('thisweek');
+				if(filtersAdded.indexOf('thisweek')==-1) {
+					filtersAdded.push('thisweek');
+					self.historyDateFilterOptions.push({"value": "thisweek", "text": "This week", order: -7});
+				}
+			}
+			if(DateTimeUtil.isLastWeek(h.timestamp)) {
+				h.dateFilterLabels.push('lastweek');
+				if(filtersAdded.indexOf('lastweek')==-1) {
+					filtersAdded.push('lastweek');
+					self.historyDateFilterOptions.push({"value": "lastweek", "text": "Last week", order: -14});
+				}
+			}
+			if(DateTimeUtil.isThisMonth(h.timestamp)) {
+				h.dateFilterLabels.push('thismonth');
+				if(filtersAdded.indexOf('thismonth')==-1) {
+					filtersAdded.push('thismonth');
+					self.historyDateFilterOptions.push({"value": "thismonth", "text": "This month", order: -30});
+				}
+			}
+			if(DateTimeUtil.isLastMonth(h.timestamp)) {
+				h.dateFilterLabels.push('lastmonth');
+				if(filtersAdded.indexOf('lastmonth')==-1) {
+					filtersAdded.push('lastmonth');
+					self.historyDateFilterOptions.push({"value": "lastmonth", "text": "Last month", order: -60});
+				}
+			}
+			if(h.dateFilterLabels.length==0) { 
+				let label = `${h.timestamp.getFullYear()}-${String(h.timestamp.getMonth()+1).padStart(2, '0')}`;
+				h.dateFilterLabels.push(label);
+				if(filtersAdded.indexOf(label)==-1) {
+					filtersAdded.push(label);
+					// TODO "year-month" in current locale needed for text field
+					self.historyDateFilterOptions.push({"value": label, "text": label, order: -90});
+				}
+			}
+			self.historyDateFilterOptions = _.reverse(_.sortBy(self.historyDateFilterOptions, ['order', 'value']));		
+		});		
+	}	
 }
 
 export class Project { // TODO Perhaps d (response data from db) should be typed, although is guaranteed to be conformant by backend schema

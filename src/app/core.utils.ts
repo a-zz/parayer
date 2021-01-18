@@ -36,7 +36,7 @@ export class DateTimeUtil {
 		d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
 		d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
 		let yearStart: Date = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-		var weekNo = Math.ceil((((d.getMilliseconds() - yearStart.getMilliseconds()) / 86400000) + 1) / 7);
+		var weekNo = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
 		return [d.getUTCFullYear(), weekNo];
 	}
 
@@ -105,6 +105,7 @@ export class History {
 	relatedTo: string;
 	usr: string;
 	timestamp: Date;
+	dateFilterLabels: Array<string> = [];
 
 	constructor(d: any) {
 

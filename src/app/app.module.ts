@@ -10,9 +10,12 @@ import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -22,7 +25,6 @@ import { ActGridComponent } from './act-grid/act-grid.component';
 import { ActGroupComponent } from './act-group/act-group.component';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { CoreService } from './core.services';
 import { MyAccountComponent } from './my-account/my-account.component';
 import { MyPreferencesComponent } from './my-preferences/my-preferences.component';
 import { NavigationComponent } from './navigation/navigation.component';
@@ -48,8 +50,11 @@ import { ProjectComponent } from './project/project.component';
 		MatButtonModule,
 		MatCardModule,
 		MatChipsModule,
+		MatFormFieldModule,
 		MatIconModule,
+		MatInputModule,
 		MatListModule,
+		MatSelectModule,
 		MatSidenavModule,
 		MatSnackBarModule,
 		MatTabsModule,

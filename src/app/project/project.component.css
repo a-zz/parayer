@@ -1,17 +1,29 @@
-div.tab-content {
+#project-tabs-cntnr {
+	width: 98%;
+	height: 95%;
+}
+
+.tab-content {
 	padding: 1em;
 	overflow-y: auto;
 	margin-left: auto;
 	margin-right: 1em;
-	height: 80%;
+	height: 95%;
 }
 
 .tab-content-control-cntnr-left {
 	float: left;
+	height: 2em;
+	padding-top: 1em;
 }
 
 .tab-content-control-cntnr-right {
 	float: right;	
+}
+
+.card-list-cntnr {
+	margin-top: 4em;
+	margin-bottom: 1em;
 }
 
 .hist-entry {
