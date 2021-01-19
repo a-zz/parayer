@@ -28,9 +28,9 @@ export class ActGridComponent implements AfterContentChecked {
 		this._nav.showWait(true);
 		this.currentWeek = DateTimeUtil.computeWeek(new Date());
 		this.getActivity();
-		this._nav.setLocation('My activity', 'table_chart');		
+		this._nav.setLocation('My activity', 'table_chart');
 		window.addEventListener('resize', this.fixGridLayout);
-		// TODO Remove event listener when leaving view
+		// TODO Remove event listener when moving to another route
 	}
 	
 	ngAfterContentChecked() :void {

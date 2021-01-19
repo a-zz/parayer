@@ -54,13 +54,56 @@
 	    			</mat-error>
 				</mat-form-field>
 				<br><br>
-				<button type="submit" mat-raised-button color="primary">SAVE</button>&nbsp;
+				<button type="submit" mat-button color="primary">SAVE</button>&nbsp;
 				<a mat-button routerLink="/act-grid">CANCEL</a>
 			</form>
 		</div>
 	</mat-tab>
 	<mat-tab label="NOTES">
-		[TODO Notes]
+		<div class="tab-content" *ngIf="project!=null">
+			<div class="tab-content-control-cntnr">
+				<div class="tab-content-control-cntnr-left">
+					Found {{project!.notes.length}} notes
+					<span *ngIf="notesFilteredOut!=0">&nbsp;({{'0'}} filtered out)&nbsp;</span>
+					<button mat-icon-button color="primary" aria-label="New note" title="New note">
+						<mat-icon>add_library</mat-icon>
+					</button>
+				</div>
+				<div class="tab-content-control-cntnr-right">
+					<mat-icon>search</mat-icon>&nbsp;
+					<mat-form-field>
+    					<input matInput placeholder="search by..." aria-label="Text filter for notes" 
+    						[value]="notesTextFilter" (input)="setNotesTextFilter($event)" (keyup)="filterNotes()">
+    					<button mat-button *ngIf="notesTextFilter" matSuffix mat-icon-button aria-label="Clear filter" 
+    						(click)="notesTextFilter=''; filterNotes()">
+    						<mat-icon>close</mat-icon>
+						  </button>
+    				</mat-form-field>&nbsp;
+				</div>
+			</div>
+			<div class="card-list-cntnr">
+				<mat-card class="project-note" *ngFor="let n of project!.notes"  id="project-note-{{n._id}}">
+					<mat-card-title>
+						<input matInput placeholder="Note summary" [value]="n.summary">
+					</mat-card-title>
+					<mat-card-content>
+						<textarea matInput>{{n.descr}}</textarea>
+					</mat-card-content>
+					<mat-card-footer>
+						<mat-chip-list class="project-note-footer">
+							&nbsp;
+							<span class="project-note-meta">
+								<mat-chip class="refchip" id="{{n.usr}}">...</mat-chip>&nbsp;
+								({{n.date.toLocaleString()}})
+								<button mat-icon-button title="Delete this note" aria-label="Delete this note">
+									<mat-icon>delete</mat-icon>
+								</button>
+							</span>
+						</mat-chip-list>
+					</mat-card-footer>
+				</mat-card>			
+			</div>
+		</div>	
 	</mat-tab>
 	<mat-tab label="TASKS">
 		[TODO Tasks]
@@ -81,7 +124,7 @@
 				<div class="tab-content-control-cntnr-right">
 					<mat-icon>search</mat-icon>&nbsp;
 					<mat-form-field>
-    					<input matInput placeholder="text" title="Text filter for project history" aria-label="Text filter for project history" 
+    					<input matInput placeholder="search by..." title="Text filter for project history" aria-label="Text filter for project history" 
     						[value]="historyTextFilter" (input)="setHistoryTextFilter($event)" (keyup)="filterHistory()">
     					<button mat-button *ngIf="historyTextFilter" matSuffix mat-icon-button aria-label="Clear filter" 
     						(click)="historyTextFilter=''; filterHistory()">
@@ -113,4 +156,3 @@
 		</div>
 	</mat-tab>
 </mat-tab-group>
-

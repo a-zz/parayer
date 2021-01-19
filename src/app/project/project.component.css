@@ -5,7 +5,6 @@
 
 .tab-content {
 	padding: 1em;
-	overflow-y: auto;
 	margin-left: auto;
 	margin-right: 1em;
 	height: 95%;
@@ -34,6 +33,15 @@
 .card-list-cntnr {
 	margin-top: 4em;
 	margin-bottom: 1em;
+}
+
+.project-note {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.project-note-meta {
+	font-style: italic;
 }
 
 .hist-entry {

@@ -18,7 +18,7 @@ import * as _
 
 import { RefChipsService }
 	from '../core.services';
-import { DateTimeUtil, History }
+import { DateTimeUtil, History, Note, UI }
 	from '../core.utils';
 import { NavigationComponent }
 	from '../navigation/navigation.component';
@@ -62,13 +62,22 @@ export class ProjectComponent implements AfterViewChecked, AfterContentChecked {
 	ngAfterContentChecked() :void {
 		
 		this._rch.fillInAll(this._http);
+		_.forEach(document.querySelectorAll('textarea'), (t) => {
+			UI.textAreaFitContents(t);
+		});
 	}
 
 	loadTabContent(i :number) : void {
 		
 		switch(i) {
 		case 1:		// -- Notes --
-			console.log('Notes - To be implemented!')
+			if(this.project!=null) {
+				this._nav.showWait(true);
+				Note.getFor(this.project._id, this._http).then((n :Array<Note>) => {
+					this.project!.notes = n;
+					this._nav.showWait(false);
+				});
+			}
 			break;
 		case 2:		// -- Tasks --
 			console.log('Tasks - To be implemented!')
@@ -81,12 +90,11 @@ export class ProjectComponent implements AfterViewChecked, AfterContentChecked {
 			break;
 		case 5:		// -- Histoy --
 			if(this.project!=null) {
-				let self = this;
 				this._nav.showWait(true);
-				History.getFor(this.project._id, this._http).then(function(h) {
-					self.project!.history = h;
-					self.computeHistoryDateFilters();				
-					self._nav.showWait(false);
+				History.getFor(this.project._id, this._http).then((h :Array<History>) => {
+					this.project!.history = h;
+					this.computeHistoryDateFilters();				
+					this._nav.showWait(false);
 				});
 			}
 			break;
@@ -141,6 +149,18 @@ export class ProjectComponent implements AfterViewChecked, AfterContentChecked {
 	}
 	
 	// -- NOTES tab --
+	notesTextFilter :string = '';
+	notesFilteredOut :number = 0;
+	
+	setNotesTextFilter(e :Event) :void {
+		
+		this.notesTextFilter = (e.target as HTMLInputElement).value;
+	}
+	
+	filterNotes() :void {
+		
+		
+	}
 	
 	// -- TASKS tab --
 	
@@ -267,6 +287,7 @@ export class Project {
 	effortUnit :string;
 	effortCap :string|null;
 	history :Array<History> = [];
+	notes :Array<Note> = [];
 	
 	constructor(d :any) {
 		
