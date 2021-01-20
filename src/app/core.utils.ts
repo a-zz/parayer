@@ -151,7 +151,7 @@ export class History {
 		return p;
 	}
 
-	static make(summary :string, attachedTo :string, relatedTo :string|null, aggregate :number|null, http :HttpClient, nav :NavigationComponent) {
+	static make(summary :string, attachedTo :string, relatedTo :Array<string>|null, aggregate :number|null, http :HttpClient, nav :NavigationComponent) {
 
 		if (aggregate == null) {
 			http.get('/_uuid', { "observe": "body", "responseType": "json" }).subscribe((data :any) => {
@@ -160,7 +160,7 @@ export class History {
 					"type": "HistEntry",
 					"summary": summary,
 					"attachedTo": attachedTo,
-					"relatedTo": Array.isArray(relatedTo) ? relatedTo : [],
+					"relatedTo": relatedTo!=null?relatedTo:[],
 					"usr": UserService.getLoggedUser().id,
 					"timestamp": new Date()
 				});

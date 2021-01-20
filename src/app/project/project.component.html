@@ -64,8 +64,8 @@
 			<div class="tab-content-control-cntnr">
 				<div class="tab-content-control-cntnr-left">
 					Found {{project!.notes.length}} notes
-					<span *ngIf="notesFilteredOut!=0">&nbsp;({{'0'}} filtered out)&nbsp;</span>
-					<button mat-icon-button color="primary" aria-label="New note" title="New note">
+					<span *ngIf="notesFilteredOut!=0">&nbsp;({{notesFilteredOut}} filtered out)&nbsp;</span>
+					<button mat-icon-button color="primary" aria-label="New note" title="New note" (click)="newNote()">
 						<mat-icon>add_library</mat-icon>
 					</button>
 				</div>
@@ -93,7 +93,7 @@
 						<span class="project-note-meta">
 							<app-ref-chip [targetId]="n.usr">...</app-ref-chip>&nbsp;
 							({{n.date.toLocaleString()}})
-							<button mat-icon-button title="Delete this note" aria-label="Delete this note">
+							<button mat-icon-button title="Delete this note" aria-label="Delete this note" (click)="deleteNote(n._id);">
 								<mat-icon>delete</mat-icon>
 							</button>
 						</span>

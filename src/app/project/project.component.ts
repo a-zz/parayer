@@ -150,7 +150,44 @@ export class ProjectComponent implements AfterContentChecked {
 	
 	filterNotes() :void {
 		
+		this.notesFilteredOut = 0;
+		let textFilter = this.notesTextFilter.toUpperCase();
+		if(this.project!=null && this.project.notes!=null) {
+			_.forEach(this.project.notes, (n) => {
+				let noteCntnr = document.querySelector(`#project-note-${n._id}`) as HTMLElement;
+				if((n.summary + n.descr).toUpperCase().indexOf(textFilter)!=-1)
+					noteCntnr.style.display = '';
+				else {
+					noteCntnr.style.display = 'none';
+					this.notesFilteredOut++;
+				}
+			});
+		}
+	}
+	
+	newNote() :void {
 		
+		// TODO Clean note filter prior to inserting (as filter may leave the new note out)
+		this._nav.showWait(true);
+		let p = this.project!;
+		Note.create(p._id, this._http, this._nav).then((n :Note) => {
+			p.notes.unshift(n);
+			this._nav.showWait(false);
+			History.make(`Added a new note`, p._id, [n._id], 60 * 60 * 1000, this._http, this._nav);
+		});
+	}
+	
+	deleteNote(id :string) :void {
+		
+		// TODO Confirm dialog required!
+		let p = this.project!;
+		let n = _.find(p.notes, { "_id": id });
+		if(n!=null)
+			n.delete(this._http, this._nav).then(() => {
+				_.remove(p.notes, (pn) => {
+					return pn._id==n!._id;
+				});
+			});
 	}
 	
 	// -- TASKS tab --
@@ -176,15 +213,14 @@ export class ProjectComponent implements AfterContentChecked {
 		this.historyFilteredOutEntries = 0;
 		let textFilter = this.historyTextFilter.toUpperCase();
 		if(this.project!=null && this.project.history!=null) {
-			let self = this;
-			_.forEach(this.project.history, function(h) {
+			_.forEach(this.project.history, (h) => {
 				let entryCntnr = document.querySelector(`#project-hist-entry-${h._id}`) as HTMLElement;
 				if(h.summary.toUpperCase().indexOf(textFilter)!=-1 &&
-						(self.historyDateFilter=='' || h.dateFilterLabels.indexOf(self.historyDateFilter)!=-1))
+						(this.historyDateFilter=='' || h.dateFilterLabels.indexOf(this.historyDateFilter)!=-1))
 					entryCntnr.style.display = '';
 				else {
 					entryCntnr.style.display = 'none';
-					self.historyFilteredOutEntries++;
+					this.historyFilteredOutEntries++;
 				}
 			});
 		}
