@@ -4,7 +4,7 @@
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 import { HttpClient, HttpHeaders } 
 	from '@angular/common/http';
-import { AfterContentChecked, AfterContentInit, AfterViewChecked, Component, OnInit }
+import { AfterContentChecked, Component }
 	from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } 
 	from '@angular/forms';
@@ -12,19 +12,16 @@ import { ErrorStateMatcher }
 	from '@angular/material/core';	
 import { ActivatedRoute, Router }
 	from '@angular/router';	
-			
-import * as _ 						
+
+import * as _
 	from 'lodash';
 
-import { RefChipsService }
-	from '../core.services';
 import { DateTimeUtil, History, Note, UI }
 	from '../core.utils';
 import { NavigationComponent }
 	from '../navigation/navigation.component';
 
 @Component({
-	selector:		'app-project',
 	templateUrl: 	'./project.component.html',
 	styleUrls: 		['./project.component.css']
 })
@@ -35,8 +32,7 @@ export class ProjectComponent implements AfterContentChecked {
 	constructor(
 			private _route :ActivatedRoute, 
 			private _http :HttpClient, 
-			private _nav :NavigationComponent, 
-			private _rch :RefChipsService,
+			private _nav :NavigationComponent,
 			private _router :Router) {
 
 		this._nav.showWait(true);
@@ -56,9 +52,7 @@ export class ProjectComponent implements AfterContentChecked {
 
 	ngAfterContentChecked(): void {
 	
-		console.log('AfterContentChecked')
 		// FIXME Run below only for task and notes tabs
-		//this._rch.fillInAll(this._http);
 		_.forEach(document.querySelectorAll('textarea'), (t) => {
 			UI.textAreaFitContents(t);
 		});		

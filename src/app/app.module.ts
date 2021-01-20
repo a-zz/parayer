@@ -34,6 +34,7 @@ import { MyAccountComponent } from './my-account/my-account.component';
 import { MyPreferencesComponent } from './my-preferences/my-preferences.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { ProjectComponent } from './project/project.component';
+import { RefChipsComponent } from './ref-chips/ref-chips.component';
 
 @NgModule({
 	declarations: [
@@ -44,7 +45,8 @@ import { ProjectComponent } from './project/project.component';
 		MyAccountComponent,
 		MyPreferencesComponent,
 		NavigationComponent,
-		ProjectComponent
+		ProjectComponent,
+		RefChipsComponent
 	],
 	imports: [
 		AppRoutingModule,

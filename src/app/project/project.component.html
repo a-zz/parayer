@@ -89,17 +89,14 @@
 					<mat-card-content>
 						<textarea matInput>{{n.descr}}</textarea>
 					</mat-card-content>
-					<mat-card-footer>
-						<mat-chip-list class="project-note-footer">
-							&nbsp;
-							<span class="project-note-meta">
-								<mat-chip class="refchip" id="{{n.usr}}">...</mat-chip>&nbsp;
-								({{n.date.toLocaleString()}})
-								<button mat-icon-button title="Delete this note" aria-label="Delete this note">
-									<mat-icon>delete</mat-icon>
-								</button>
-							</span>
-						</mat-chip-list>
+					<mat-card-footer>			
+						<span class="project-note-meta">
+							<app-ref-chip [targetId]="n.usr">...</app-ref-chip>&nbsp;
+							({{n.date.toLocaleString()}})
+							<button mat-icon-button title="Delete this note" aria-label="Delete this note">
+								<mat-icon>delete</mat-icon>
+							</button>
+						</span>
 					</mat-card-footer>
 				</mat-card>			
 			</div>
@@ -144,12 +141,10 @@
 			<div class="card-list-cntnr">
 				<mat-card class="hist-entry" *ngFor="let h of project!.history"  id="project-hist-entry-{{h._id}}">
 					<mat-card-content>
-						<mat-chip-list>
-							<mat-chip class="refchip" id="{{h.usr}}">...</mat-chip>&nbsp;
-							{{h.summary}}&nbsp;
-							<mat-chip class="refchip"*ngFor="let r of h.relatedTo" id="{{r}}">...</mat-chip>&nbsp;
-							({{h.timestamp.toLocaleString()}})
-						</mat-chip-list>
+						<app-ref-chip [targetId]="h.usr">...</app-ref-chip>&nbsp;
+						{{h.summary}}&nbsp;
+						<app-ref-chip *ngFor="let r of h.relatedTo" [targetId]="r">...</app-ref-chip>&nbsp;
+						({{h.timestamp.toLocaleString()}})
 					</mat-card-content>
 				</mat-card>
 			</div>
