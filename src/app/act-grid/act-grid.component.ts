@@ -4,7 +4,7 @@
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 import { HttpClient }
 	from '@angular/common/http';
-import { AfterContentChecked, Component } 	
+import { AfterContentChecked, Component, OnDestroy, OnInit } 	
 	from '@angular/core';
 
 import * as _ 					from 'lodash';
@@ -18,7 +18,7 @@ import { NavigationComponent }	from '../navigation/navigation.component';
 	templateUrl: './act-grid.component.html',
 	styleUrls: ['./act-grid.component.css']
 })
-export class ActGridComponent implements AfterContentChecked {
+export class ActGridComponent implements AfterContentChecked, OnDestroy, OnInit {
 
 	myActList :Array<Activity> = []; 
 	currentWeek :Array<any>;
@@ -29,13 +29,21 @@ export class ActGridComponent implements AfterContentChecked {
 		this.currentWeek = DateTimeUtil.computeWeek(new Date());
 		this.getActivity();
 		this._nav.setLocation('My activity', 'table_chart');
-		window.addEventListener('resize', this.fixGridLayout);
-		// TODO Remove event listener when moving to another route
 	}
 	
 	ngAfterContentChecked() :void {
 		
 		this.fixGridLayout();
+	}
+	
+	ngOnInit() :void {
+		
+		window.addEventListener('resize', this.fixGridLayout);
+	}
+	
+	ngOnDestroy() :void {
+		
+		window.removeEventListener('resize', this.fixGridLayout);
 	}
 	
 	getActivity() :void {
