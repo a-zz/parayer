@@ -82,7 +82,7 @@
 				</div>
 			</div>
 			<div class="card-list-cntnr">
-				<mat-card class="project-note" *ngFor="let n of project!.notes"  id="project-note-{{n._id}}">
+				<mat-card class="project-note mat-elevation-z4" *ngFor="let n of project!.notes"  id="project-note-{{n._id}}">
 					<mat-card-title>
 						<input matInput placeholder="Note summary" [value]="n.summary">
 					</mat-card-title>

@@ -4,7 +4,7 @@
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 import { HttpClient, HttpHeaders } 
 	from '@angular/common/http';
-import { AfterContentChecked, AfterViewChecked, Component }
+import { AfterContentChecked, AfterContentInit, AfterViewChecked, Component, OnInit }
 	from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } 
 	from '@angular/forms';
@@ -28,7 +28,7 @@ import { NavigationComponent }
 	templateUrl: 	'./project.component.html',
 	styleUrls: 		['./project.component.css']
 })
-export class ProjectComponent implements AfterViewChecked, AfterContentChecked {
+export class ProjectComponent implements AfterContentChecked {
 	
 	project :Project|null = null;
 
@@ -54,19 +54,16 @@ export class ProjectComponent implements AfterViewChecked, AfterContentChecked {
 		});
 	}
 
-	ngAfterViewChecked(): void {
+	ngAfterContentChecked(): void {
 	
-		this.loadTabContent(0);		
-	}
-	
-	ngAfterContentChecked() :void {
-		
-		this._rch.fillInAll(this._http);
+		console.log('AfterContentChecked')
+		// FIXME Run below only for task and notes tabs
+		//this._rch.fillInAll(this._http);
 		_.forEach(document.querySelectorAll('textarea'), (t) => {
 			UI.textAreaFitContents(t);
-		});
+		});		
 	}
-
+	
 	loadTabContent(i :number) : void {
 		
 		switch(i) {
