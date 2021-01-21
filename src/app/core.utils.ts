@@ -296,7 +296,7 @@ export class Note {
 				_.forEach(data.rows, (row) =>{
 					r.push(new Note(row.doc));
 				});
-				resolve(r); 
+				resolve(_.reverse(_.sortBy(r, ['date']))); 
 			});
 		});
 		return p;
