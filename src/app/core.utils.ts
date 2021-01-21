@@ -97,6 +97,7 @@ export class DateTimeUtil {
 	}
 }
 
+// TODO Consider reimplementing this as a service
 export class History {
 
 	_id: string;
@@ -152,56 +153,69 @@ export class History {
 	}
 
 	// TODO Eliminate NavigationComponent dependendy, leave UI feedback to calling component 
-	static make(summary :string, attachedTo :string, relatedTo :Array<string>|null, aggregate :number|null, http :HttpClient, nav :NavigationComponent) {
+	static make(summary :string, attachedTo :string, relatedTo :Array<string>|null, aggregate :number|null, http :HttpClient) :Promise<void> {
 
-		if (aggregate == null) {
-			http.get('/_uuid', { "observe": "body", "responseType": "json" }).subscribe((data :any) => {
-				let e = new History({
-					"_id": data.uuid,
-					"type": "HistEntry",
-					"summary": summary,
-					"attachedTo": attachedTo,
-					"relatedTo": relatedTo!=null?relatedTo:[],
-					"usr": UserService.getLoggedUser().id,
-					"timestamp": new Date()
-				});
-				let dbObjUrl = `/_data/${e._id}`;
-				http.put(dbObjUrl, e.stringify(), { "headers": new HttpHeaders({ "Content-Type": "application/json"})}).subscribe((putResp :any) => {
-					if(!putResp.ok)
-						nav.showSnackBar(`History saving failed! ${putResp.reason}`);
-				});
-			});
-		}
-		else {
-			History.getFor(attachedTo, http).then((h :any) => {
-				h = _.filter(h, function(o) {
-					if(o.usr!=UserService.getLoggedUser().id)
-						return false;
-					else if(relatedTo==null)
-						return o.relatedTo==null || o.relatedTo.length==0;
-					else
-						return false;
-				});
-				let now = new Date();
-				h = _.filter(h, function(o) {
-					return DateTimeUtil.diff(now, o.timestamp) <= aggregate;
-				});
-				if (h.length == 0) //Can't aggregate, new entry
-					History.make(summary, attachedTo, relatedTo, null, http, nav);
-				else {
-					h = _.sortBy(h, ['timestamp']);
-					// TODO Improve summary on aggregation (figure out how)
-					History.make(`${h[0].summary}`, attachedTo, relatedTo, null, http, nav);
-					_.forEach(h, function(o) {
-						let dbObjUrl = `/_data/${o._id}?rev=${o._rev}`;
-						http.delete(`${dbObjUrl}`, {}).subscribe((data) => { /* Nothing to do here */ });
+		return new Promise<void>((resolve, reject) => {
+			if (aggregate == null) {
+				http.get('/_uuid', { "observe": "body", "responseType": "json" }).subscribe((data :any) => {
+					let e = new History({
+						"_id": data.uuid,
+						"type": "HistEntry",
+						"summary": summary,
+						"attachedTo": attachedTo,
+						"relatedTo": relatedTo!=null?relatedTo:[],
+						"usr": UserService.getLoggedUser().id,
+						"timestamp": new Date()
 					});
-				}
-			});
-		}
+					let dbObjUrl = `/_data/${e._id}`;
+					http.put(dbObjUrl, e.stringify(), { "headers": new HttpHeaders({ "Content-Type": "application/json"})}).subscribe((putResp :any) => {
+						if(!putResp.ok)
+							reject();
+						else
+							resolve();
+					});
+				});
+			}
+			else {
+				History.getFor(attachedTo, http).then((h :any) => {
+					h = _.filter(h, function(o) {
+						if(o.usr!=UserService.getLoggedUser().id)
+							return false;
+						else if(relatedTo==null)
+							return o.relatedTo==null || o.relatedTo.length==0;
+						else
+							return false;
+					});
+					let now = new Date();
+					h = _.filter(h, function(o) {
+						return DateTimeUtil.diff(now, o.timestamp) <= aggregate;
+					});
+					if (h.length == 0) //Can't aggregate, new entry
+						History.make(summary, attachedTo, relatedTo, null, http).then(() => {
+							resolve();
+						}, (reason) => {
+							reject(reason);
+						});
+					else {
+						h = _.sortBy(h, ['timestamp']);
+						// TODO Improve summary on aggregation (figure out how)
+						History.make(`${h[0].summary}`, attachedTo, relatedTo, null, http).then(() => {
+							resolve();
+						}, (reason) => {
+							reject(reason);
+						});;
+						_.forEach(h, function(o) {
+							let dbObjUrl = `/_data/${o._id}?rev=${o._rev}`;
+							http.delete(`${dbObjUrl}`, {}).subscribe((data) => { /* Nothing to do here */ });
+						});
+					}
+				});
+			}			
+		});
 	}
 }
 
+// TODO Consider reimplementing this as a service
 export class Note {
 
 	_id :string;
@@ -250,39 +264,35 @@ export class Note {
 
 	delete(http :HttpClient) :Promise<void> {
 		
-		let n = this;
-		let p :Promise<void> = new Promise((resolve, reject) => {
-			let dbObjUrl = `/_data/${n._id}`;
-			http.delete(`${dbObjUrl}?rev=${n._rev}`).subscribe((delResp :any) => {
+		return new Promise((resolve, reject) => {
+			let dbObjUrl = `/_data/${this._id}`;
+			http.delete(`${dbObjUrl}?rev=${this._rev}`).subscribe((delResp :any) => {
 				if(delResp.ok)
 					resolve();
 				else
 					reject(delResp.reason);
 			});
 		});
-		return p;
 	}
 
 	update(http :HttpClient) :Promise<void>  {
 
-		let n = this;
-		let p :Promise<void> = new Promise((resolve, reject) => {
-			let dbObjUrl = `/_data/${n._id}`; 
-			http.put(dbObjUrl, n.stringify(), { "headers": new HttpHeaders({ "Content-Type": "application/json"})}).subscribe((putResp :any) => {
+		return new Promise((resolve, reject) => {
+			let dbObjUrl = `/_data/${this._id}`; 
+			http.put(dbObjUrl, this.stringify(), { "headers": new HttpHeaders({ "Content-Type": "application/json"})}).subscribe((putResp :any) => {
 				if(putResp.ok) {
-					n.refresh(putResp.rev);
+					this.refresh(putResp.rev);
 					resolve();
 				}
 				else
 					reject(putResp.reason);
 			});
 		});
-		return p;
 	}
 	
 	static getFor(objectId :string, http :HttpClient) :Promise<Array<Note>> {
 
-		let p :Promise<Array<Note>> = new Promise((resolve, reject) => {
+		return new Promise((resolve, reject) => {
 			// TODO Optimize view: maybe not all fields are required to be emitted as we're using &include_docs=true
 			let objDataUrl = `/_data/_design/global-scope/_view/notes-attached-to?key="${objectId}"&include_docs=true`;
 			http.get(objDataUrl, {"observe": "body", "responseType": "json"}).subscribe((data :any) => {
@@ -293,12 +303,11 @@ export class Note {
 				resolve(_.reverse(_.sortBy(r, ['date']))); 
 			});
 		});
-		return p;
 	}
 
 	static create(attachedTo :string, http :HttpClient) :Promise<Note> {
 	
-		let p :Promise<Note>= new Promise(function (resolve, reject) {
+		return new Promise(function (resolve, reject) {
 			http.get('/_uuid').subscribe((data :any) => {
 				let n :Note = new Note({
 					"_id": data.uuid,
@@ -320,7 +329,6 @@ export class Note {
 				});
 			});
 		});
-		return p;
 	}
 }
 

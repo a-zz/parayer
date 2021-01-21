@@ -10,8 +10,6 @@ import { FormControl, FormGroupDirective, NgForm, Validators }
 	from '@angular/forms';
 import { ErrorStateMatcher } 
 	from '@angular/material/core';	
-import { MatDialog, MatDialogConfig } 
-	from '@angular/material/dialog';
 import { ActivatedRoute, Router }
 	from '@angular/router';	
 
@@ -22,8 +20,6 @@ import { DateTimeUtil, History, Note, UI }
 	from '../core.utils';
 import { NavigationComponent }
 	from '../navigation/navigation.component';
-import { SimpleConfirmDialogComponent, SimpleConfirmDialogData }
-	from '../navigation/simple-confirm-dialog.component';	
 
 @Component({
 	templateUrl: 	'./project.component.html',
@@ -37,8 +33,7 @@ export class ProjectComponent implements AfterContentChecked {
 			private _route :ActivatedRoute, 
 			private _http :HttpClient, 
 			private _nav :NavigationComponent,
-			private _router :Router,
-			private _confirm: MatDialog) {
+			private _router :Router) {
 
 		this._nav.showWait(true);
 		let objDataUrl :string = `/_data/${this._route.snapshot.paramMap.get('id')}`;
@@ -85,6 +80,7 @@ export class ProjectComponent implements AfterContentChecked {
 			console.log('Appointments - To be implemented!')
 			break;
 		case 5:		// -- Histoy --
+			// FIXME Not reloading on tab change
 			if(this.project!=null) {
 				this._nav.showWait(true);
 				History.getFor(this.project._id, this._http).then((h :Array<History>) => {
@@ -131,11 +127,12 @@ export class ProjectComponent implements AfterContentChecked {
 			p.effortUnit = this.fcEffortUnit.value;
 			p.effortCap = this.fcEffortCap.value;
 			let dbObjUrl = `/_data/${p._id}`; 
-			// TODO Figure out how to parse errors
 			this._http.put(dbObjUrl, p.stringify(), { "headers": new HttpHeaders({ "Content-Type": "application/json"})})
 				.subscribe((putResp :any) => {
 				if(putResp.ok) {
-					History.make(`Updated project info`, p._id, null, 60 * 60 * 1000, this._http, this._nav);
+					History.make(`Updated project info`, p._id, null, 60 * 60 * 1000, this._http).then(() => {}, (reason) => {
+						this._nav.showSnackBar(reason);
+					});
 					this._router.navigateByUrl('/act-grid');
 				}
 				else
@@ -172,13 +169,14 @@ export class ProjectComponent implements AfterContentChecked {
 	
 	newNote() :void {
 		
-		// TODO Clean note filter prior to inserting (as filter may leave the new note out)
 		this._nav.showWait(true);
 		let p = this.project!;
 		Note.create(p._id, this._http).then((n :Note) => {
 			p.notes.unshift(n);
 			this._nav.showWait(false);
-			History.make(`Added a new note`, p._id, [n._id], 60 * 60 * 1000, this._http, this._nav);
+			History.make(`Added a new note`, p._id, [n._id], 60 * 60 * 1000, this._http).then(() => {}, (reason) => {
+				this._nav.showSnackBar(reason);
+			});
 		}, (reason) => {
 			this._nav.showSnackBar(reason);
 		});
