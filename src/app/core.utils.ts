@@ -211,6 +211,7 @@ export class Note {
 	usr :string;
 	date :Date;
 	attachedTo :string;
+	modified: boolean;
 	
 	constructor(d :any) {
 	
@@ -222,6 +223,7 @@ export class Note {
 		this.usr = d.usr;
 		this.date = new Date(Date.parse(d.date));
 		this.attachedTo = d.attachedTo;
+		this.modified = false;
 	}
 
 	stringify() {
@@ -238,9 +240,10 @@ export class Note {
 		};
 		return JSON.stringify(o);
 	}
-
+		
 	refresh(rev :string) {
-			
+		
+		this.modified = false;
 		this._rev = rev;
 	}
 
@@ -272,7 +275,7 @@ export class Note {
 				reject();
 			}
 			let dbObjUrl = `/_data/${n._id}`; 
-			http.put(dbObjUrl, n.stringify()).subscribe((putResp :any) => {
+			http.put(dbObjUrl, n.stringify(), { "headers": new HttpHeaders({ "Content-Type": "application/json"})}).subscribe((putResp :any) => {
 				if(putResp.ok) {
 					n.refresh(putResp.rev);
 					resolve();

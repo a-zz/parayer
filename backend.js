@@ -348,7 +348,7 @@ function dbSchemaValidation(couchDbQueryString, data) {
 		schemaFile += 'history-entry';
 		break;
 	default:
-		throw `Schema validation failed: object type unknown or undefined for ${couchDbQueryString}`;
+		throw `Schema validation failed: object type unknown or undefined for ${couchDbQueryString}: ${data}`;
 	}	
 	schemaFile += '.schema.json';
 	const schema = require(schemaFile);

@@ -182,24 +182,28 @@ export class ProjectComponent implements AfterContentChecked {
 		});
 	}
 	
-	deleteNote(id :string, confirmed :boolean) :void {
+	updateNote(n :Note) :void {
+	
+		if(n.modified)
+			n.update(this._http, this._nav);
+	}
+	
+	deleteNote(n :Note, confirmed :boolean) :void {
 		
 		if(!confirmed) {
 			this._nav.showSimpleConfirmDialog('Please confirm', 'Note deletion can\'t be undone, proceed?', () => {
-				this.deleteNote(id, true);
+				this.deleteNote(n, true);
 			}, () => {
 				// Nothing to do
 			});
 		}
 		else {
 			let p = this.project!;
-			let n = _.find(p.notes, { "_id": id });
-			if(n!=null)
-				n.delete(this._http, this._nav).then(() => {
-					_.remove(p.notes, (pn) => {
-						return pn._id==n!._id;
-					});
+			n.delete(this._http, this._nav).then(() => {
+				_.remove(p.notes, (pn) => {
+					return pn._id==n!._id;
 				});
+			});
 		}
 	}
 	

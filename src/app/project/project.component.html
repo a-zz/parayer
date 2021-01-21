@@ -84,16 +84,16 @@
 			<div class="card-list-cntnr">
 				<mat-card class="project-note mat-elevation-z4" *ngFor="let n of project!.notes"  id="project-note-{{n._id}}">
 					<mat-card-title>
-						<input matInput placeholder="Note summary" [value]="n.summary">
+						<input matInput placeholder="Note summary" [(ngModel)]="n.summary" (keyup)="n.modified=true" (blur)="updateNote(n);">
 					</mat-card-title>
 					<mat-card-content>
-						<textarea matInput>{{n.descr}}</textarea>
+						<textarea matInput [(ngModel)]="n.descr" (change)="n.modified=true;" (blur)="updateNote(n);"></textarea>
 					</mat-card-content>
 					<mat-card-footer>			
 						<span class="project-note-meta">
 							<app-ref-chip [targetId]="n.usr">...</app-ref-chip>&nbsp;
 							({{n.date.toLocaleString()}})
-							<button mat-icon-button title="Delete this note" aria-label="Delete this note" (click)="deleteNote(n._id);">
+							<button mat-icon-button title="Delete this note" aria-label="Delete this note" (click)="deleteNote(n, false);">
 								<mat-icon>delete</mat-icon>
 							</button>
 						</span>
