@@ -151,6 +151,7 @@ export class History {
 		return p;
 	}
 
+	// TODO Eliminate NavigationComponent dependendy, leave UI feedback to calling component 
 	static make(summary :string, attachedTo :string, relatedTo :Array<string>|null, aggregate :number|null, http :HttpClient, nav :NavigationComponent) {
 
 		if (aggregate == null) {
@@ -247,43 +248,33 @@ export class Note {
 		this._rev = rev;
 	}
 
-	delete(http :HttpClient, nav :NavigationComponent) :Promise<void> {
+	delete(http :HttpClient) :Promise<void> {
 		
 		let n = this;
 		let p :Promise<void> = new Promise((resolve, reject) => {
 			let dbObjUrl = `/_data/${n._id}`;
 			http.delete(`${dbObjUrl}?rev=${n._rev}`).subscribe((delResp :any) => {
-				if(delResp.ok) {
-					nav.showSnackBar('Note deleted!');
+				if(delResp.ok)
 					resolve();
-				}
-				else {
-					nav.showSnackBar(`Note deletion failed! ${delResp.reason}`);
-					reject();
-				}
+				else
+					reject(delResp.reason);
 			});
 		});
 		return p;
 	}
 
-	update(http :HttpClient, nav: NavigationComponent) :Promise<void>  {
+	update(http :HttpClient) :Promise<void>  {
 
 		let n = this;
 		let p :Promise<void> = new Promise((resolve, reject) => {
-			if(n.summary.trim()=='') {
-				nav.showSnackBar('A note summary is required!');
-				reject();
-			}
 			let dbObjUrl = `/_data/${n._id}`; 
 			http.put(dbObjUrl, n.stringify(), { "headers": new HttpHeaders({ "Content-Type": "application/json"})}).subscribe((putResp :any) => {
 				if(putResp.ok) {
 					n.refresh(putResp.rev);
 					resolve();
 				}
-				else {
-					nav.showSnackBar(`Note update failed! ${putResp.reason}`);
-					reject();
-				} 
+				else
+					reject(putResp.reason);
 			});
 		});
 		return p;
@@ -305,7 +296,7 @@ export class Note {
 		return p;
 	}
 
-	static create(attachedTo :string, http :HttpClient, nav :NavigationComponent) :Promise<Note> {
+	static create(attachedTo :string, http :HttpClient) :Promise<Note> {
 	
 		let p :Promise<Note>= new Promise(function (resolve, reject) {
 			http.get('/_uuid').subscribe((data :any) => {
@@ -319,16 +310,13 @@ export class Note {
 					"attachedTo": attachedTo
 				});
 				let dbObjUrl = `/_data/${n._id}`;	
-				http.put(dbObjUrl, n.stringify(), { "headers": new HttpHeaders({ "Content-Type": "application/json"})})
-					.subscribe((putResp :any) => {
-					if(!putResp.ok) {
-						nav.showSnackBar(`Note creation failed! ${putResp.reason}`);
-						reject();
-					}
-					else {
+				http.put(dbObjUrl, n.stringify(), { "headers": new HttpHeaders({ "Content-Type": "application/json"})}).subscribe((putResp :any) => {
+					if(putResp.ok) {
 						n.refresh(putResp.rev);
 						resolve(n);
 					}
+					else
+						reject(putResp.reason);
 				});
 			});
 		});

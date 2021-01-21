@@ -175,17 +175,25 @@ export class ProjectComponent implements AfterContentChecked {
 		// TODO Clean note filter prior to inserting (as filter may leave the new note out)
 		this._nav.showWait(true);
 		let p = this.project!;
-		Note.create(p._id, this._http, this._nav).then((n :Note) => {
+		Note.create(p._id, this._http).then((n :Note) => {
 			p.notes.unshift(n);
 			this._nav.showWait(false);
 			History.make(`Added a new note`, p._id, [n._id], 60 * 60 * 1000, this._http, this._nav);
+		}, (reason) => {
+			this._nav.showSnackBar(reason);
 		});
 	}
 	
 	updateNote(n :Note) :void {
 	
-		if(n.modified)
-			n.update(this._http, this._nav);
+		if(n.modified) {
+			if(n.summary.trim()=='')
+				this._nav.showSnackBar('A note summary is required!');
+			else
+				n.update(this._http).then(() => {}, (reason) => {
+					this._nav.showSnackBar(reason);
+			});
+		}
 	}
 	
 	deleteNote(n :Note, confirmed :boolean) :void {
@@ -199,10 +207,13 @@ export class ProjectComponent implements AfterContentChecked {
 		}
 		else {
 			let p = this.project!;
-			n.delete(this._http, this._nav).then(() => {
+			n.delete(this._http).then(() => {
 				_.remove(p.notes, (pn) => {
 					return pn._id==n!._id;
 				});
+				this._nav.showSnackBar('Note deleted!');
+			}, (reason) => {
+				this._nav.showSnackBar(`Note deletion failed! ${reason}`);
 			});
 		}
 	}
