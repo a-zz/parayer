@@ -1,18 +1,29 @@
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
-// parayer :: ActGridComponent
-// My account (user info) management
+// parayer :: NavigationComponent
+// Main layout and navigation tools
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
-// TODO Method contracts missing
-import { BreakpointObserver } 	from '@angular/cdk/layout';
-import { Breakpoints } 			from '@angular/cdk/layout';
-import { Component } 			from '@angular/core';
-import { map } 					from 'rxjs/operators';
-import { MatSnackBar } 			from '@angular/material/snack-bar';
-import { Observable } 			from 'rxjs';
-import { shareReplay } 			from 'rxjs/operators';
+import { BreakpointObserver } 	
+	from '@angular/cdk/layout';
+import { Breakpoints }
+	from '@angular/cdk/layout';
+import { Component }
+	from '@angular/core';
+import { map }
+	from 'rxjs/operators';
+import { MatDialog, MatDialogConfig, MatDialogRef } 
+	from '@angular/material/dialog';
+import { MatSnackBar }
+	from '@angular/material/snack-bar';
+import { Observable }
+	from 'rxjs';
+import { shareReplay }
+	from 'rxjs/operators';
 
-import { AppComponent}			from '../app.component';
-import { CoreService }			from '../core.services';
+import { AppComponent }
+	from '../app.component';
+import { CoreService }
+	from '../core.services';
+import { SimpleConfirmDialogComponent } from './simple-confirm-dialog.component';
 
 @Component({
 	selector: 'app-navigation',
@@ -35,7 +46,8 @@ export class NavigationComponent {
 			public _app :AppComponent,
 			private _breakpointObserver :BreakpointObserver,
 			private _csrv :CoreService,
-			private _snackBar :MatSnackBar) {
+			private _snackBar :MatSnackBar,
+			private _confirm: MatDialog) {
 			
 	}
 		
@@ -56,9 +68,11 @@ export class NavigationComponent {
 		this._snackBar.open(txt, '', { duration: 3000 });
 	}
 	
-	showSimpleConfirmDialog(innerHTML :string, okCallback :()=>void, cancelCallBack :()=>void) {
+	showSimpleConfirmDialog(title :string, message :string, okCallback :()=>void, cancelCallback :()=>void) :MatDialogRef<SimpleConfirmDialogComponent> {
 		
-		console.log('To be implemented!');
+		let cfg = new MatDialogConfig();
+		cfg.data = { "title": title, "message": message, "okCallback": okCallback, "cancelCallback": cancelCallback };
+		return this._confirm.open(SimpleConfirmDialogComponent, cfg);
 	}
 	
 	goHome() :void {

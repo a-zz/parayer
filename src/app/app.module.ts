@@ -14,6 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -35,6 +36,7 @@ import { MyPreferencesComponent } from './my-preferences/my-preferences.componen
 import { NavigationComponent } from './navigation/navigation.component';
 import { ProjectComponent } from './project/project.component';
 import { RefChipsComponent } from './ref-chips/ref-chips.component';
+import { SimpleConfirmDialogComponent } from './navigation/simple-confirm-dialog.component';
 
 @NgModule({
 	declarations: [
@@ -46,7 +48,8 @@ import { RefChipsComponent } from './ref-chips/ref-chips.component';
 		MyPreferencesComponent,
 		NavigationComponent,
 		ProjectComponent,
-		RefChipsComponent
+		RefChipsComponent,
+		SimpleConfirmDialogComponent
 	],
 	imports: [
 		AppRoutingModule,
@@ -59,6 +62,7 @@ import { RefChipsComponent } from './ref-chips/ref-chips.component';
 		MatCardModule,
 		MatChipsModule,
 		MatDatepickerModule,
+		MatDialogModule,
 		MatFormFieldModule,
 		MatIconModule,
 		MatInputModule,

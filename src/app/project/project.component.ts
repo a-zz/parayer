@@ -10,6 +10,8 @@ import { FormControl, FormGroupDirective, NgForm, Validators }
 	from '@angular/forms';
 import { ErrorStateMatcher } 
 	from '@angular/material/core';	
+import { MatDialog, MatDialogConfig } 
+	from '@angular/material/dialog';
 import { ActivatedRoute, Router }
 	from '@angular/router';	
 
@@ -20,6 +22,8 @@ import { DateTimeUtil, History, Note, UI }
 	from '../core.utils';
 import { NavigationComponent }
 	from '../navigation/navigation.component';
+import { SimpleConfirmDialogComponent, SimpleConfirmDialogData }
+	from '../navigation/simple-confirm-dialog.component';	
 
 @Component({
 	templateUrl: 	'./project.component.html',
@@ -33,7 +37,8 @@ export class ProjectComponent implements AfterContentChecked {
 			private _route :ActivatedRoute, 
 			private _http :HttpClient, 
 			private _nav :NavigationComponent,
-			private _router :Router) {
+			private _router :Router,
+			private _confirm: MatDialog) {
 
 		this._nav.showWait(true);
 		let objDataUrl :string = `/_data/${this._route.snapshot.paramMap.get('id')}`;
@@ -177,17 +182,25 @@ export class ProjectComponent implements AfterContentChecked {
 		});
 	}
 	
-	deleteNote(id :string) :void {
+	deleteNote(id :string, confirmed :boolean) :void {
 		
-		// TODO Confirm dialog required!
-		let p = this.project!;
-		let n = _.find(p.notes, { "_id": id });
-		if(n!=null)
-			n.delete(this._http, this._nav).then(() => {
-				_.remove(p.notes, (pn) => {
-					return pn._id==n!._id;
-				});
+		if(!confirmed) {
+			this._nav.showSimpleConfirmDialog('Please confirm', 'Note deletion can\'t be undone, proceed?', () => {
+				this.deleteNote(id, true);
+			}, () => {
+				// Nothing to do
 			});
+		}
+		else {
+			let p = this.project!;
+			let n = _.find(p.notes, { "_id": id });
+			if(n!=null)
+				n.delete(this._http, this._nav).then(() => {
+					_.remove(p.notes, (pn) => {
+						return pn._id==n!._id;
+					});
+				});
+		}
 	}
 	
 	// -- TASKS tab --
