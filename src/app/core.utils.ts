@@ -10,9 +10,6 @@ import * as _
 
 import { UserService }				
 	from './core.services'
-import { NavigationComponent }		
-	from './navigation/navigation.component';
-
 
 export class DateTimeUtil {
 
@@ -139,17 +136,20 @@ export class History {
 
 	static getFor(objectId: string, http: HttpClient): Promise<Array<History>> {
 
-		let p: Promise<Array<History>> = new Promise(function(resolve, reject) {
+		return new Promise((resolve, reject) => {
 			let objDataUrl = `/_data/_design/global-scope/_view/history-for?key="${objectId}"&include_docs=true`;
 			http.get(objDataUrl, { "observe": "body", "responseType": "json" }).subscribe((data: any) => {
-				let r: Array<History> = [];
-				_.forEach(data.rows, function(row: any) {
-					r.push(new History(row.doc));
-				})
-				resolve(_.reverse(_.sortBy(r, ['timestamp'])));
+				if(!data.error) {
+					let r: Array<History> = [];
+					_.forEach(data.rows, (row: any) => {
+						r.push(new History(row.doc));
+					})
+					resolve(_.reverse(_.sortBy(r, ['timestamp'])));
+				}
+				else
+					reject(`\uD83D\uDCA3 !!! ${data.reason} !!! \uD83D\uDCA3`);
 			});
 		});
-		return p;
 	}
 
 	// TODO Eliminate NavigationComponent dependendy, leave UI feedback to calling component 
@@ -170,7 +170,7 @@ export class History {
 					let dbObjUrl = `/_data/${e._id}`;
 					http.put(dbObjUrl, e.stringify(), { "headers": new HttpHeaders({ "Content-Type": "application/json"})}).subscribe((putResp :any) => {
 						if(!putResp.ok)
-							reject();
+							reject(`\uD83D\uDCA3 !!! ${putResp.reason} !!! \uD83D\uDCA3`);
 						else
 							resolve();
 					});
@@ -178,7 +178,7 @@ export class History {
 			}
 			else {
 				History.getFor(attachedTo, http).then((h :any) => {
-					h = _.filter(h, function(o) {
+					h = _.filter(h, (o) => {
 						if(o.usr!=UserService.getLoggedUser().id)
 							return false;
 						else if(relatedTo==null)
@@ -187,14 +187,14 @@ export class History {
 							return false;
 					});
 					let now = new Date();
-					h = _.filter(h, function(o) {
+					h = _.filter(h, (o) => {
 						return DateTimeUtil.diff(now, o.timestamp) <= aggregate;
 					});
 					if (h.length == 0) //Can't aggregate, new entry
 						History.make(summary, attachedTo, relatedTo, null, http).then(() => {
 							resolve();
 						}, (reason) => {
-							reject(reason);
+							reject(`\uD83D\uDCA3 !!! ${reason} !!! \uD83D\uDCA3`);
 						});
 					else {
 						h = _.sortBy(h, ['timestamp']);
@@ -202,11 +202,11 @@ export class History {
 						History.make(`${h[0].summary}`, attachedTo, relatedTo, null, http).then(() => {
 							resolve();
 						}, (reason) => {
-							reject(reason);
+							reject(`\uD83D\uDCA3 !!! ${reason} !!! \uD83D\uDCA3`);
 						});;
-						_.forEach(h, function(o) {
+						_.forEach(h, (o) => {
 							let dbObjUrl = `/_data/${o._id}?rev=${o._rev}`;
-							http.delete(`${dbObjUrl}`, {}).subscribe((data) => { /* Nothing to do here */ });
+							http.delete(`${dbObjUrl}`, {}).subscribe(() => { /* Nothing to do here */ });
 						});
 					}
 				});
@@ -226,6 +226,7 @@ export class Note {
 	usr :string;
 	date :Date;
 	attachedTo :string;
+	
 	modified: boolean;
 	
 	constructor(d :any) {
@@ -270,7 +271,7 @@ export class Note {
 				if(delResp.ok)
 					resolve();
 				else
-					reject(delResp.reason);
+					reject(`\uD83D\uDCA3 !!! ${delResp.reason} !!! \uD83D\uDCA3`);
 			});
 		});
 	}
@@ -285,7 +286,7 @@ export class Note {
 					resolve();
 				}
 				else
-					reject(putResp.reason);
+					reject(`\uD83D\uDCA3 !!! ${putResp.reason} !!! \uD83D\uDCA3`);
 			});
 		});
 	}
@@ -296,18 +297,22 @@ export class Note {
 			// TODO Optimize view: maybe not all fields are required to be emitted as we're using &include_docs=true
 			let objDataUrl = `/_data/_design/global-scope/_view/notes-attached-to?key="${objectId}"&include_docs=true`;
 			http.get(objDataUrl, {"observe": "body", "responseType": "json"}).subscribe((data :any) => {
-				let r :Array<Note> = [];
-				_.forEach(data.rows, (row) =>{
-					r.push(new Note(row.doc));
-				});
-				resolve(_.reverse(_.sortBy(r, ['date']))); 
+				if(!data.error) {
+					let r :Array<Note> = [];
+					_.forEach(data.rows, (row) =>{
+						r.push(new Note(row.doc));
+					});
+					resolve(_.reverse(_.sortBy(r, ['date'])));
+				}
+				else
+					reject(`\uD83D\uDCA3 !!! ${data.reason} !!! \uD83D\uDCA3`); 
 			});
 		});
 	}
 
 	static create(attachedTo :string, http :HttpClient) :Promise<Note> {
 	
-		return new Promise(function (resolve, reject) {
+		return new Promise((resolve, reject) => {
 			http.get('/_uuid').subscribe((data :any) => {
 				let n :Note = new Note({
 					"_id": data.uuid,
@@ -325,7 +330,7 @@ export class Note {
 						resolve(n);
 					}
 					else
-						reject(putResp.reason);
+						reject(`\uD83D\uDCA3 !!! ${putResp.reason} !!! \uD83D\uDCA3`);
 				});
 			});
 		});
