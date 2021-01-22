@@ -18,6 +18,11 @@
 
 .tab-content-control-cntnr-right {
 	float: right;	
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    vertical-align: bottom;
 }
 
 .project-form-field {
@@ -40,8 +45,38 @@
 	margin-bottom: 0.5em;
 }
 
+div.note-title-left {
+	float: left;
+	min-width: 80%;
+}
+
+div.note-title-right {
+	float: right;
+	font-size: 0.75em;
+}
+
 .project-note-meta {
 	font-style: italic;
+	height: 2em;
+}
+
+div.task-title-left {
+	float: left;
+	min-width: 50%;
+}
+
+div.task-title-right {
+	float: right;
+	font-size: 0.75em;
+}
+
+.project-task-pc-select {
+	width: 5em;
+}
+
+.project-task-meta {
+	font-style: italic;
+	height: 2em;
 }
 
 .hist-entry {

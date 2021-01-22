@@ -95,6 +95,7 @@ export class DateTimeUtil {
 }
 
 // TODO Consider reimplementing this as a service
+// TODO Db servicing of History, Note (and others such as ProjectTask) is pretty much the same: provide as interface
 export class History {
 
 	_id: string;
@@ -216,6 +217,7 @@ export class History {
 }
 
 // TODO Consider reimplementing this as a service
+// TODO Db servicing of History, Note (and others such as ProjectTask) is pretty much the same: provide as interface
 export class Note {
 
 	_id :string;

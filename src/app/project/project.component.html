@@ -1,4 +1,5 @@
 <mat-tab-group id="project-tabs-cntnr" (selectedTabChange)="loadTabContent($event.index)">
+
 	<mat-tab label="GENERAL">
 		<div class="tab-content" *ngIf="project!=null">
 			<form (submit)="save()">
@@ -18,6 +19,10 @@
 						[formControl]="fcDescr" [errorStateMatcher]="fcErr"></textarea>
 				</mat-form-field>
 				<br>
+				[TODO: usr admin list]
+				<br>
+				[TODO: usr assign list]
+				<br><br>
 				<mat-form-field appearance="fill" class="project-form-field-50pc">
 	  				<mat-label id="project-date-start-label">Start date</mat-label>
 	  				<input matInput [matDatepicker]="pickerStart" aria-labelledby="project-date-start-label"
@@ -59,14 +64,15 @@
 			</form>
 		</div>
 	</mat-tab>
+
 	<mat-tab label="NOTES">
 		<div class="tab-content" *ngIf="project!=null">
 			<div class="tab-content-control-cntnr">
 				<div class="tab-content-control-cntnr-left">
 					Found {{project!.notes.length}} notes
 					<span *ngIf="notesFilteredOut!=0">&nbsp;({{notesFilteredOut}} filtered out)&nbsp;</span>
-					<button mat-icon-button color="primary" aria-label="New note" title="New note" (click)="newNote()">
-						<mat-icon>add_library</mat-icon>
+					<button mat-button color="primary" aria-label="New note" title="New note" (click)="newNote()">
+						<mat-icon>add_library</mat-icon>&nbsp;NEW
 					</button>
 				</div>
 				<div class="tab-content-control-cntnr-right">
@@ -84,33 +90,104 @@
 			<div class="card-list-cntnr">
 				<mat-card class="project-note mat-elevation-z4" *ngFor="let n of project!.notes"  id="project-note-{{n._id}}">
 					<mat-card-title>
-						<input matInput placeholder="Note summary" [(ngModel)]="n.summary" (keyup)="n.modified=true" (blur)="updateNote(n);">
+						<div class="note-title-left">
+							<input matInput placeholder="Note summary" [(ngModel)]="n.summary" (keyup)="n.modified=true" (blur)="updateNote(n);">
+						</div>
+						<div class="note-title-right">
+							<button mat-icon-button title="Delete this note" aria-label="Delete this note" (click)="deleteNote(n);">
+								<mat-icon>delete</mat-icon>
+							</button>						
+						</div>
 					</mat-card-title>
 					<mat-card-content>
 						<textarea matInput [(ngModel)]="n.descr" (change)="n.modified=true;" (blur)="updateNote(n);"></textarea>
 					</mat-card-content>
-					<mat-card-footer>			
-						<span class="project-note-meta">
-							<app-ref-chip [targetId]="n.usr">...</app-ref-chip>&nbsp;
-							({{n.date.toLocaleString()}})
-							<button mat-icon-button title="Delete this note" aria-label="Delete this note" (click)="deleteNote(n, false);">
+					<mat-card-footer class="project-note-meta">
+						<app-ref-chip [targetId]="n.usr">...</app-ref-chip>&nbsp;
+						({{n.date.toLocaleString()}})
+					</mat-card-footer>
+				</mat-card>			
+			</div>
+		</div>	
+	</mat-tab>
+
+	<mat-tab label="TASKS">
+		<div class="tab-content" *ngIf="project!=null">
+			<div class="tab-content-control-cntnr">
+				<div class="tab-content-control-cntnr-left">
+					Found {{project!.tasks.length}} tasks ({{tasksCompleted()}} completed)
+					<span *ngIf="tasksFilteredOut!=0">&nbsp;({{tasksFilteredOut}} filtered out)&nbsp;</span>
+					<button mat-button color="primary" aria-label="New task" title="New task" (click)="newTask()">
+						<mat-icon>add_libray</mat-icon>&nbsp;NEW
+					</button>
+					<button mat-button aria-label="Purge completed task" title="Purge completed tasks" (click)="purgeTasks()">
+						<mat-icon>delete_forever</mat-icon>&nbsp;PURGE
+					</button>
+				</div>
+				<div class="tab-content-control-cntnr-right">
+					<mat-chip-list>
+						<mat-icon title="Sort tasks by..." aria-label="Sort tasks by...">sort</mat-icon>&nbsp;
+						<mat-chip [selected]="taskSort=='pc'" (click)="taskSort='pc'" (selectionChange)="sortTasks($event);">% completed</mat-chip>
+						<mat-chip [selected]="taskSort=='dueDate'" (click)="taskSort='dueDate'" (selectionChange)="sortTasks($event);">due date</mat-chip>
+						<mat-chip [selected]="taskSort=='created.date'" (click)="taskSort='created.date'" (selectionChange)="sortTasks($event);">creation date</mat-chip>
+						<mat-chip [selected]="taskSort=='updated.date'" (click)="taskSort='updated.date'" (selectionChange)="sortTasks($event);">updated</mat-chip>
+					</mat-chip-list>&nbsp;
+					<mat-icon>search</mat-icon>&nbsp;
+					<mat-form-field>
+    					<input matInput placeholder="search by..." aria-label="Text filter for tasks" 
+    						[value]="tasksTextFilter" (input)="setTasksTextFilter($event)" (keyup)="filterTasks()">
+    					<button mat-button *ngIf="tasksTextFilter" matSuffix mat-icon-button aria-label="Clear filter" 
+    						(click)="tasksTextFilter=''; filterTasks()">
+    						<mat-icon>close</mat-icon>
+						  </button>
+    				</mat-form-field>&nbsp;
+				</div>
+			</div>
+			<div class="card-list-cntnr">
+				<mat-card class="project-note mat-elevation-z4" *ngFor="let t of project!.tasks"  id="project-task-{{t._id}}">
+					<mat-card-title>
+						<div class="task-title-left">
+							<input matInput placeholder="Task summary" [(ngModel)]="t.summary" (keyup)="t.modified=true" (blur)="updateTask(t);">
+						</div>
+						<div class="task-title-right">
+							<mat-icon>person</mat-icon>&nbsp;
+							[TODO: usr assign list]
+							[TODO: due date]
+							<mat-icon>forward</mat-icon>&nbsp;
+							<mat-form-field class="project-task-pc-select" title="Task progress" aria-label="Task progress">
+								<mat-select [(ngModel)]="t.pc">
+									<mat-option *ngFor="let pc of ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100']" [value]="pc">{{pc}}%</mat-option>
+								</mat-select>
+							</mat-form-field>&nbsp;
+							<button mat-icon-button title="Delete this task" aria-label="Delete this task" (click)="deleteTask(t);">
 								<mat-icon>delete</mat-icon>
-							</button>
+							</button>							
+						</div>
+					</mat-card-title>
+					<mat-card-content>
+						<textarea matInput [(ngModel)]="t.descr" (change)="t.modified=true;" (blur)="updateTask(t);"></textarea>
+					</mat-card-content>
+					<mat-card-footer class="project-task-meta">
+						&nbsp;Created by: <app-ref-chip [targetId]="t.created.usr">...</app-ref-chip>&nbsp;
+						({{t.created.date.toLocaleString()}})&nbsp;
+						<span *ngIf="t.created!=t.updated">
+							; updated by: <app-ref-chip [targetId]="t.updated.usr">...</app-ref-chip>&nbsp;
+							({{t.updated.date.toLocaleString()}})&nbsp;
 						</span>
 					</mat-card-footer>
 				</mat-card>			
 			</div>
 		</div>	
 	</mat-tab>
-	<mat-tab label="TASKS">
-		[TODO Tasks]
-	</mat-tab>
+	
 	<mat-tab label="FILES">
 		[TODO Files]
 	</mat-tab>
+	
 	<mat-tab label="APPOINTMENTS">
 		[TODO Appointments]
 	</mat-tab>
+	
 	<mat-tab label="HISTORY">
 		<div class="tab-content" *ngIf="project!=null">
 			<div class="tab-content-control-cntnr">
@@ -150,4 +227,5 @@
 			</div>
 		</div>
 	</mat-tab>
+	
 </mat-tab-group>

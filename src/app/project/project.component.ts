@@ -16,10 +16,13 @@ import { ActivatedRoute, Router }
 import * as _
 	from 'lodash';
 
+import { UserService } 
+	from '../core.services';
 import { DateTimeUtil, History, Note, UI }
 	from '../core.utils';
 import { NavigationComponent }
 	from '../navigation/navigation.component';
+import { MatChipSelectionChange } from '@angular/material/chips';
 
 @Component({
 	templateUrl: 	'./project.component.html',
@@ -28,6 +31,8 @@ import { NavigationComponent }
 export class ProjectComponent implements AfterContentChecked {
 	
 	project :Project|null = null;
+	
+	selectedTab :number = 0;
 
 	constructor(
 			private _route :ActivatedRoute, 
@@ -52,14 +57,15 @@ export class ProjectComponent implements AfterContentChecked {
 
 	ngAfterContentChecked(): void {
 	
-		// FIXME Run below only for task and notes tabs
-		_.forEach(document.querySelectorAll('textarea'), (t) => {
-			UI.textAreaFitContents(t);
-		});		
+		if(this.selectedTab==1 || this.selectedTab==2)
+			_.forEach(document.querySelectorAll('textarea'), (t) => {
+				UI.textAreaFitContents(t);
+			});		
 	}
 	
 	loadTabContent(i :number) : void {
 		
+		this.selectedTab = i;
 		switch(i) {
 		case 1:		// -- Notes --
 			if(this.project!=null) {
@@ -67,11 +73,23 @@ export class ProjectComponent implements AfterContentChecked {
 				Note.getFor(this.project._id, this._http).then((n :Array<Note>) => {
 					this.project!.notes = n;
 					this._nav.showWait(false);
+				}, (reason) => {
+					this._nav.showSnackBar(reason);
 				});
 			}
 			break;
 		case 2:		// -- Tasks --
-			console.log('Tasks - To be implemented!')
+			if(this.project!=null) {
+				this._nav.showWait(true);
+				ProjectTask.getFor(this.project._id, this._http).then((t :Array<ProjectTask>) => {
+					this.project!.tasks = t;
+					this.taskSort = 'pc';
+					this.sortTasks(undefined);
+					this._nav.showWait(false);
+				}, (reason) => {
+					this._nav.showSnackBar(reason);
+				});
+			}
 			break;
 		case 3:		// -- Files --
 			console.log('Files - To be implemented!')
@@ -87,6 +105,8 @@ export class ProjectComponent implements AfterContentChecked {
 					this.project!.history = h;
 					this.computeHistoryDateFilters();				
 					this._nav.showWait(false);
+				}, (reason) => {
+					this._nav.showSnackBar(reason);
 				});
 			}
 			break;
@@ -194,7 +214,7 @@ export class ProjectComponent implements AfterContentChecked {
 		}
 	}
 	
-	deleteNote(n :Note, confirmed :boolean) :void {
+	deleteNote(n :Note, confirmed :boolean|undefined) :void {
 		
 		if(!confirmed) {
 			this._nav.showSimpleConfirmDialog('Please confirm', 'Note deletion can\'t be undone, proceed?', () => {
@@ -217,6 +237,107 @@ export class ProjectComponent implements AfterContentChecked {
 	}
 	
 	// -- TASKS tab --
+	tasksTextFilter :string = '';
+	tasksFilteredOut :number = 0;
+	
+	setTasksTextFilter(e :Event) :void {
+		
+		this.tasksTextFilter = (e.target as HTMLInputElement).value;
+	}
+	
+	tasksCompleted() :number {
+		
+		let p = this.project!;
+		let n :number = 0;
+		_.forEach(p.tasks, (t) => {
+			if(t.pc=='100')
+			n++;
+		});
+		return n;
+	}
+	
+	filterTasks() :void {
+	
+		this.tasksFilteredOut = 0;
+		let textFilter = this.tasksTextFilter.toUpperCase();
+		if(this.project!=null && this.project.tasks!=null) {
+			_.forEach(this.project.tasks, (t) => {
+				let taskCntnr = document.querySelector(`#project-task-${t._id}`) as HTMLElement;
+				if((t.summary + t.descr).toUpperCase().indexOf(textFilter)!=-1)
+					taskCntnr.style.display = '';
+				else {
+					taskCntnr.style.display = 'none';
+					this.tasksFilteredOut++;
+				}
+			});
+		}
+	}	
+
+	taskSort :string = 'pc';
+
+	// TODO 2nd click on same chip should reverse the sort
+	sortTasks(e :MatChipSelectionChange|undefined) :void {
+
+		if(e && !e.selected)
+			return;
+		else {		
+			let t = this.project!.tasks;
+			if(this.taskSort=='created.date' || this.taskSort=='dateDue')
+				t = _.sortBy(t, [this.taskSort])
+			else if(this.taskSort=='pc') 
+				t = _.sortBy(t, [function(task) { return parseInt(task.pc); }]);
+			else
+				t = _.reverse(_.sortBy(t, [this.taskSort]));
+			this.project!.tasks = t;
+		}
+	}
+	
+	
+	newTask() :void {
+		
+		let p = this.project!;
+		ProjectTask.create(p._id, UserService.getLoggedUser().id, this._http).then((t :ProjectTask) => {
+			p.tasks.unshift(t);
+			this.sortTasks(undefined);
+			History.make(`Added a new task`, p._id, [t._id], 60 * 60 * 1000, this._http).then(() => {}, (reason) => {
+				this._nav.showSnackBar(reason);
+			});
+		}, (reason) => {
+			this._nav.showSnackBar(reason);
+		});
+	}
+	
+	updateTask(t :ProjectTask) :void {
+		
+		console.log('TODO');
+	}
+	
+	deleteTask(t :ProjectTask, confirmed :boolean|undefined) :void {
+		
+		if(!confirmed) {
+			this._nav.showSimpleConfirmDialog('Please confirm', 'Task deletion can\'t be undone, proceed?', () => {
+				this.deleteTask(t, true);
+			}, () => {
+				// Nothing to do
+			});
+		}
+		else {
+			let p = this.project!;
+			t.delete(this._http).then(() => {
+				_.remove(p.tasks, (pt) => {
+					return pt._id==t!._id;
+				});
+				this._nav.showSnackBar('Task deleted!');
+			}, (reason) => {
+				this._nav.showSnackBar(`Task deletion failed! ${reason}`);
+			});
+		}
+	}
+	
+	purgeTasks() :void {
+		
+		console.log('TODO');
+	}
 	
 	// -- FILES tab --
 	
@@ -341,6 +462,7 @@ export class Project {
 	effortCap :string|null;
 	history :Array<History> = [];
 	notes :Array<Note> = [];
+	tasks :Array<ProjectTask> = [];
 	
 	constructor(d :any) {
 		
@@ -380,6 +502,142 @@ export class Project {
 	refresh(rev :string) {
 		
 		this._rev = rev;	
+	}
+}
+
+export class ProjectTask {
+
+    _id :string;
+    _rev :string;
+	type :string;
+    summary  :string;
+    descr :string;
+    pc :string;
+    dateDue :Date|null;
+    created :{ "usr" :string, "date": Date };
+    updated :{ "usr" :string, "date": Date };
+    project :string;
+    usrAssignList :Array<string>;
+
+	modified :boolean = false;
+
+    constructor(d :any) {
+
+		// Object from db
+        this._id = d._id;
+        this._rev = d._rev;
+		this.type = d.type;
+        this.summary = d.summary;
+        this.descr = d.descr;
+        this.pc = `${d.pc}`;
+        this.dateDue = d.dateDue!=''?new Date(Date.parse(d.dateDue)):null;
+        this.created = {
+            "usr": d.created.usr,
+            "date": new Date(Date.parse(d.created.date))
+        };
+        this.updated = {
+        	"usr": d.updated.usr,
+            "date": new Date(Date.parse(d.updated.date))
+        };
+        this.project = d.project;
+        this.usrAssignList = d.usrAssignList;
+	}
+
+	setUpdateInfo(usrId :string) {
+			
+		// TODO Maybe shouldn't' udpate for a given time-windoww after task creation (as they're usually inmmediately updated after that and thus is useless info)
+		this.updated = {
+			"usr": usrId,
+			"date": new Date()
+		}				
+	}
+
+    stringify() {
+
+        let o = {
+            "_id": this._id,
+			"_rev": this._rev,
+            "type": this.type,
+            "summary": this.summary,
+            "descr": this.descr,
+            "pc": parseInt(this.pc),
+            "dateDue": this.dateDue != null ? this.dateDue.toISOString() : '',
+            "created": { "usr": this.created.usr, "date": this.created.date.toISOString() },
+            "updated": { "usr": this.updated.usr, "date": this.updated.date.toISOString() },
+            "project": this.project,
+            "usrAssignList": this.usrAssignList
+        };
+        return JSON.stringify(o);
+    }
+
+	refresh(rev :string) {
+			
+		this.modified = false;
+		this._rev = rev;
+	}
+	
+	delete(http :HttpClient) :Promise<void> {
+	
+		return new Promise((resolve, reject) => {
+			let dbObjUrl = `/_data/${this._id}`;
+			http.delete(`${dbObjUrl}?rev=${this._rev}`).subscribe((delResp :any) => {
+				if(delResp.ok)
+					resolve();
+				else
+					reject(`\uD83D\uDCA3 !!! ${delResp.reason} !!! \uD83D\uDCA3`);
+			});
+		});
+	}
+	/*
+	update() : Promise<void> {
+		
+	}
+	*/
+	static create(projectId: string, usrId :string, http :HttpClient) :Promise<ProjectTask> {
+		
+		return new Promise((resolve, reject) => {
+			http.get('/_uuid', { "observe": "body", "responseType": "json"}).subscribe((respUuid :any) => {
+				let creationDate :string = new Date().toISOString();
+				let t = new ProjectTask({
+					"_id": respUuid.uuid,
+					"type": "ProjectTask",
+					"summary": "New task",
+					"descr": "",
+					"pc": "0",
+					"dateDue": '',
+        			"created": { "usr": usrId, "date": creationDate },
+					"updated": { "usr": usrId, "date": creationDate },
+					"project": projectId,
+					"usrAssignList": [usrId]	
+				});				
+				let dbObjUrl = `/_data/${t._id}`;	
+				http.put(dbObjUrl, t.stringify(), { "headers": new HttpHeaders({ "Content-Type": "application/json"})}).subscribe((putResp :any) => {
+					if(putResp.ok) {
+						t.refresh(putResp.rev);
+						resolve(t);
+					}
+					else
+						reject(`\uD83D\uDCA3 !!! ${putResp.reason} !!! \uD83D\uDCA3`); 											
+				});
+			});			
+		});
+	}
+	
+	static getFor(projectId :string, http :HttpClient) :Promise<Array<ProjectTask>> {
+		
+		return new Promise((resolve, reject) => {
+			let objDataUrl = `/_data/_design/project/_view/tasks-by-project?key="${projectId}"&include_docs=true`;
+			http.get(objDataUrl, { "observe": "body", "responseType": "json" }).subscribe((data :any) => {
+				if(!data.error) {
+					let r :Array<ProjectTask> = [];
+					_.forEach(data.rows, (row) =>{
+						r.push(new ProjectTask(row.doc));
+					});
+					resolve(_.reverse(_.sortBy(r, ['date'])));
+				}
+					reject(`\uD83D\uDCA3 !!! ${data.reason} !!! \uD83D\uDCA3`);				
+			});
+		});
 	}
 }
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------

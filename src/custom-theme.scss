@@ -13,7 +13,7 @@
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $parayer-primary: mat-palette($mat-teal);
-$parayer-accent: mat-palette($mat-lime, A200, A100, A400);
+$parayer-accent: mat-palette($mat-orange, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
 $parayer-warn: mat-palette($mat-red);
