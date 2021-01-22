@@ -65,6 +65,12 @@ export class ProjectComponent implements AfterContentChecked {
 	
 	loadTabContent(i :number) : void {
 		
+		this.notesTextFilter = '';
+		this.tasksTextFilter = '';
+		this.taskSort = 'pc';
+		this.historyTextFilter = '';
+		this.historyDateFilter = '';
+		
 		this.selectedTab = i;
 		switch(i) {
 		case 1:		// -- Notes --
@@ -83,7 +89,6 @@ export class ProjectComponent implements AfterContentChecked {
 				this._nav.showWait(true);
 				ProjectTask.getFor(this.project._id, this._http).then((t :Array<ProjectTask>) => {
 					this.project!.tasks = t;
-					this.taskSort = 'pc';
 					this.sortTasks(undefined);
 					this._nav.showWait(false);
 				}, (reason) => {
