@@ -103,7 +103,7 @@ export class History {
 	type: string;
 	summary: string;
 	attachedTo: string;
-	relatedTo: string;
+	relatedTo: string|null;
 	usr: string;
 	timestamp: Date;
 	dateFilterLabels: Array<string> = [];
@@ -154,7 +154,7 @@ export class History {
 	}
  
 	// TODO Not sure whether aggregation is working fine... test thoroughfully
-	static make(summary :string, attachedTo :string, relatedTo :Array<string>|null, aggregate :number|null, http :HttpClient) :Promise<void> {
+	static make(summary :string, attachedTo :string, relatedTo :string|null, aggregate :number|null, http :HttpClient) :Promise<void> {
 
 		return new Promise<void>((resolve, reject) => {
 			if (aggregate == null) {
@@ -164,7 +164,7 @@ export class History {
 						"type": "HistEntry",
 						"summary": summary,
 						"attachedTo": attachedTo,
-						"relatedTo": relatedTo!=null?relatedTo:[],
+						"relatedTo": relatedTo,
 						"usr": UserService.getLoggedUser().id,
 						"timestamp": new Date()
 					});
@@ -180,13 +180,8 @@ export class History {
 			else {
 				History.getFor(attachedTo, http).then((h :any) => {
 					h = _.filter(h, (o) => {
-						if(o.usr!=UserService.getLoggedUser().id)
-							return false;
-						else if(relatedTo==null)
-							return o.relatedTo==null || o.relatedTo.length==0;
-						else
-							return false;
-					});
+						return o.usr==UserService.getLoggedUser().id && o.relatedTo==relatedTo;
+					});					
 					let now = new Date();
 					h = _.filter(h, (o) => {
 						return DateTimeUtil.diff(now, o.timestamp) <= aggregate;

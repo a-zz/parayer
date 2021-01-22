@@ -194,7 +194,7 @@ export class ProjectComponent implements AfterContentChecked {
 		Note.create(p._id, this._http).then((n :Note) => {
 			p.notes.unshift(n);
 			this._nav.showWait(false);
-			History.make(`Added a new note`, p._id, [n._id], 60 * 60 * 1000, this._http).then(() => {}, (reason) => {
+			History.make(`Added a new note`, p._id, n._id, null, this._http).then(() => {}, (reason) => {
 				this._nav.showSnackBar(reason);
 			});
 		}, (reason) => {
@@ -208,9 +208,11 @@ export class ProjectComponent implements AfterContentChecked {
 			if(n.summary.trim()=='')
 				this._nav.showSnackBar('A note summary is required!');
 			else
-				n.update(this._http).then(() => {}, (reason) => {
+				n.update(this._http).then(() => {
+					History.make('Updated note', this.project!._id, n._id, 60 * 60 * 1000, this._http)	
+				}, (reason) => {
 					this._nav.showSnackBar(reason);
-			});
+				});
 		}
 	}
 	
@@ -229,6 +231,7 @@ export class ProjectComponent implements AfterContentChecked {
 				_.remove(p.notes, (pn) => {
 					return pn._id==n!._id;
 				});
+				History.make(`Deleted note ${n.summary}`, this.project!._id, n._id, null, this._http);
 				this._nav.showSnackBar('Note deleted!');
 			}, (reason) => {
 				this._nav.showSnackBar(`Note deletion failed! ${reason}`);
@@ -300,7 +303,7 @@ export class ProjectComponent implements AfterContentChecked {
 		ProjectTask.create(p._id, UserService.getLoggedUser().id, this._http).then((t :ProjectTask) => {
 			p.tasks.unshift(t);
 			this.sortTasks(undefined);
-			History.make(`Added a new task`, p._id, [t._id], 60 * 60 * 1000, this._http).then(() => {}, (reason) => {
+			History.make(`Added a new task`, p._id, t._id, null, this._http).then(() => {}, (reason) => {
 				this._nav.showSnackBar(reason);
 			});
 		}, (reason) => {
@@ -317,6 +320,7 @@ export class ProjectComponent implements AfterContentChecked {
 			else
 				t.update(this._http).then(() => {
 					this.sortTasks(undefined);
+					History.make('Updated task', this.project!._id, t._id, 60 * 60 * 1000, this._http)
 				}, (reason) => {
 					this._nav.showSnackBar(reason);
 			});
@@ -337,6 +341,7 @@ export class ProjectComponent implements AfterContentChecked {
 				_.remove(p.tasks, (pt) => {
 					return pt._id==t!._id;
 				});
+				History.make(`Deleted task ${t.summary}`, this.project!._id, t._id, null, this._http);
 				this._nav.showSnackBar('Task deleted!');
 			}, (reason) => {
 				this._nav.showSnackBar(`Task deletion failed! ${reason}`);
