@@ -214,7 +214,7 @@ export class ProjectComponent implements AfterContentChecked {
 		}
 	}
 	
-	deleteNote(n :Note, confirmed :boolean|undefined) :void {
+	deleteNote(n :Note, confirmed ?:boolean) :void {
 		
 		if(!confirmed) {
 			this._nav.showSimpleConfirmDialog('Please confirm', 'Note deletion can\'t be undone, proceed?', () => {
@@ -276,6 +276,7 @@ export class ProjectComponent implements AfterContentChecked {
 	taskSort :string = 'pc';
 
 	// TODO 2nd click on same chip should reverse the sort
+	// FIXME Sorting by due date not working
 	sortTasks(e :MatChipSelectionChange|undefined) :void {
 
 		if(e && !e.selected)
@@ -307,20 +308,29 @@ export class ProjectComponent implements AfterContentChecked {
 		});
 	}
 	
+	// FIXME PUT results in conflict sometimes, find out why
 	updateTask(t :ProjectTask) :void {
 		
-		console.log('TODO');
+		if(t.modified) {
+			if(t.summary.trim()=='')
+				this._nav.showSnackBar('A task summary is required!');
+			else
+				t.update(this._http).then(() => {
+					this.sortTasks(undefined);
+				}, (reason) => {
+					this._nav.showSnackBar(reason);
+			});
+		}
 	}
 	
-	deleteTask(t :ProjectTask, confirmed :boolean|undefined) :void {
+	deleteTask(t :ProjectTask, confirmed ?:boolean) :void {
 		
-		if(!confirmed) {
+		if(!confirmed)
 			this._nav.showSimpleConfirmDialog('Please confirm', 'Task deletion can\'t be undone, proceed?', () => {
 				this.deleteTask(t, true);
 			}, () => {
 				// Nothing to do
 			});
-		}
 		else {
 			let p = this.project!;
 			t.delete(this._http).then(() => {
@@ -334,9 +344,20 @@ export class ProjectComponent implements AfterContentChecked {
 		}
 	}
 	
-	purgeTasks() :void {
+	purgeTasks(confirmed ?:boolean) :void {
 		
-		console.log('TODO');
+		// TODO Would be fine to have snackbar showing actual number of tasks deleted
+		if(!confirmed)
+			this._nav.showSimpleConfirmDialog('Please confirm', 'Task purge can\'t be undone, proceed?', () => {
+				this.purgeTasks(true);
+			}, () => {
+				// Nothing to do
+			});		
+		else 
+			_.forEach(this.project!.tasks, (t) => {
+				if(t.pc=='100')
+					this.deleteTask(t, true);
+			});
 	}
 	
 	// -- FILES tab --
@@ -588,11 +609,22 @@ export class ProjectTask {
 			});
 		});
 	}
-	/*
-	update() : Promise<void> {
+	
+	update(http :HttpClient) :Promise<void> {
 		
+		return new Promise((resolve, reject) => {
+			let dbObjUrl = `/_data/${this._id}`; 
+			http.put(dbObjUrl, this.stringify(), { "headers": new HttpHeaders({ "Content-Type": "application/json"})}).subscribe((putResp :any) => {
+				if(putResp.ok) {
+					this.refresh(putResp.rev);
+					resolve();
+				}
+				else
+					reject(`\uD83D\uDCA3 !!! ${putResp.reason} !!! \uD83D\uDCA3`);
+			});
+		});	
 	}
-	*/
+	
 	static create(projectId: string, usrId :string, http :HttpClient) :Promise<ProjectTask> {
 		
 		return new Promise((resolve, reject) => {

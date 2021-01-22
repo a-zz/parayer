@@ -152,8 +152,8 @@ export class History {
 			});
 		});
 	}
-
-	// TODO Eliminate NavigationComponent dependendy, leave UI feedback to calling component 
+ 
+	// TODO Not sure whether aggregation is working fine... test thoroughfully
 	static make(summary :string, attachedTo :string, relatedTo :Array<string>|null, aggregate :number|null, http :HttpClient) :Promise<void> {
 
 		return new Promise<void>((resolve, reject) => {

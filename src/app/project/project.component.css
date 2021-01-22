@@ -25,6 +25,10 @@
     vertical-align: bottom;
 }
 
+.mat-chip-list {
+	padding-top: 1em;
+}
+
 .project-form-field {
 	width: 50%;
 	margin-bottom: 1.5em;
@@ -65,12 +69,25 @@ div.task-title-left {
 	min-width: 50%;
 }
 
+input.task-summary {
+	height: 2.5em;
+	vertical-align: bottom;
+}
+
+input.task-summary-completed {
+	text-decoration: line-through;
+}
+
 div.task-title-right {
 	float: right;
 	font-size: 0.75em;
 }
 
-.project-task-pc-select {
+.project-task-field {
+	width: 10em;
+}
+
+.project-task-field-half {
 	width: 5em;
 }
 
