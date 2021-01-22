@@ -115,7 +115,7 @@ export class History {
 		this.type = 'HistEntry';
 		this.summary = d.summary;
 		this.attachedTo = d.attachedTo;
-		this.relatedTo = d.relatedTo;
+		this.relatedTo = d.relatedTo!=''?d.relatedTo:null;
 		this.usr = d.usr;
 		this.timestamp = new Date(Date.parse(d.timestamp));
 	}
@@ -128,7 +128,7 @@ export class History {
 			"type": 'HistEntry',
 			"summary": this.summary,
 			"attachedTo": this.attachedTo,
-			"relatedTo": this.relatedTo,
+			"relatedTo": this.relatedTo!=null?this.relatedTo:'',
 			"usr": this.usr,
 			"timestamp": this.timestamp.toISOString()
 		};
@@ -186,12 +186,14 @@ export class History {
 					h = _.filter(h, (o) => {
 						return DateTimeUtil.diff(now, o.timestamp) <= aggregate;
 					});
-					if (h.length == 0) //Can't aggregate, new entry
+					if (h.length == 0) {//Can't aggregate, new entry
 						History.make(summary, attachedTo, relatedTo, null, http).then(() => {
+							console.log('*')
 							resolve();
 						}, (reason) => {
 							reject(`\uD83D\uDCA3 !!! ${reason} !!! \uD83D\uDCA3`);
 						});
+					}
 					else {
 						h = _.sortBy(h, ['timestamp']);
 						// TODO Improve summary on aggregation (figure out how)

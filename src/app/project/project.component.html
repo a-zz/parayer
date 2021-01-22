@@ -236,7 +236,7 @@
 					<mat-card-content>
 						<app-ref-chip [targetId]="h.usr">...</app-ref-chip>&nbsp;
 						{{h.summary}}&nbsp;
-						<app-ref-chip [targetId]="h.relatedTo">...</app-ref-chip>&nbsp;
+						<app-ref-chip *ngIf="h.relatedTo" [targetId]="h.relatedTo">...</app-ref-chip>&nbsp;
 						({{h.timestamp.toLocaleString()}})
 					</mat-card-content>
 				</mat-card>
