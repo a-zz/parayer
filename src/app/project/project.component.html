@@ -100,7 +100,7 @@
 						</div>
 					</mat-card-title>
 					<mat-card-content>
-						<textarea matInput [(ngModel)]="n.descr" (change)="n.modified=true;" (blur)="updateNote(n);"></textarea>
+						<textarea matInput  placeholder="Note content" [(ngModel)]="n.descr" (change)="n.modified=true;" (blur)="updateNote(n);"></textarea>
 					</mat-card-content>
 					<mat-card-footer class="project-note-meta">
 						<app-ref-chip [targetId]="n.usr">...</app-ref-chip>&nbsp;
@@ -165,7 +165,7 @@
 						</div>
 					</mat-card-title>
 					<mat-card-content>
-						<textarea matInput [(ngModel)]="t.descr" (change)="t.modified=true;" (blur)="updateTask(t);"></textarea>
+						<textarea matInput placeholder="Task description" [(ngModel)]="t.descr" (change)="t.modified=true;" (blur)="updateTask(t);"></textarea>
 					</mat-card-content>
 					<mat-card-footer class="project-task-meta">
 						&nbsp;Created by: <app-ref-chip [targetId]="t.created.usr">...</app-ref-chip>&nbsp;
