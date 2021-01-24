@@ -1,15 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------
+// parayer :: ActAreaComponent
+// Activity area management tool
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------
+import { Component, OnInit } 
+	from '@angular/core';
 
 @Component({
-  selector: 'app-act-area',
-  templateUrl: './act-area.component.html',
-  styleUrls: ['./act-area.component.css']
+	selector: 'app-act-area',
+	templateUrl: './act-area.component.html',
+	styleUrls: ['./act-area.component.css']
 })
 export class ActAreaComponent implements OnInit {
 
-  constructor() { }
+	constructor() { }
 
-  ngOnInit(): void {
-  }
-
+	ngOnInit(): void {
+	}
 }
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------

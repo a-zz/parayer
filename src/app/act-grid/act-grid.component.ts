@@ -17,7 +17,7 @@ import { DateTimeUtil, History, UI }
 import { NavigationComponent }	
 	from '../navigation/navigation.component';
 import { Project } 
-	from '../project/project.component';
+	from '../project/project.model';
 import { Router } 
 	from '@angular/router';
 
@@ -58,8 +58,7 @@ export class ActGridComponent implements AfterContentChecked, OnDestroy, OnInit 
 	}
 	
 	getActivity() :void {
-
-		// TODO Perhaps response data from db should be typed, although it's guaranteed to be conformant by backend schema	
+	
 		// TODO As per the manual, data-fetching should be done by a specific service
 		let myActList :Array<Activity> = [];
 		let usrId = UserService.getLoggedUser().id;
@@ -143,7 +142,7 @@ export class ActGridComponent implements AfterContentChecked, OnDestroy, OnInit 
 		});
 	}
 }
-
+ 
 export class Activity {
 			
 	id :string;
@@ -153,7 +152,7 @@ export class Activity {
 	parent :string|null;
 	url :string; 
 			
-	constructor(d :any) { // TODO Perhaps d (response data from db) should be typed, although is guaranteed to be conformant by backend schema
+	constructor(d :any) {
 		
 		this.id = d.id;
 		this.type = d.value.type;
