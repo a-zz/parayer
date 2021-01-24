@@ -96,6 +96,7 @@ export class DateTimeUtil {
 
 // TODO Consider reimplementing this as a service
 // TODO Db servicing of History, Note (and others such as ProjectTask) is pretty much the same: provide as interface
+// TODO A History purge utility would be very likely a good idea (removal of history attached (not related, beware) to deleted objects))
 export class History {
 
 	_id: string;
