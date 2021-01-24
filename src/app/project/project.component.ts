@@ -150,18 +150,14 @@ export class ProjectComponent implements AfterContentChecked {
 			p.dateStart = this.fcDateStart.value;
 			p.dateEnd = this.fcDateEnd.value;
 			p.effortUnit = this.fcEffortUnit.value;
-			p.effortCap = this.fcEffortCap.value;
-			let dbObjUrl = `/_data/${p._id}`; 
-			this._http.put(dbObjUrl, p.stringify(), { "headers": new HttpHeaders({ "Content-Type": "application/json"})})
-				.subscribe((putResp :any) => {
-				if(putResp.ok) {
-					History.make(`Updated project info`, p._id, null, 60 * 60 * 1000, this._http).then(() => {}, (reason) => {
-						this._nav.showSnackBar(reason);
-					});
-					this._router.navigateByUrl('/act-grid');
-				}
-				else
-					this._nav.showSnackBar(`Oops! ${putResp.reason}`); 
+			p.effortCap = this.fcEffortCap.value;			
+			p.save(this._http).then(() => {
+				History.make(`Updated project info`, p._id, null, 60 * 60 * 1000, this._http).then(() => {}, (reason) => {
+					this._nav.showSnackBar(reason);
+				});
+				this._router.navigateByUrl('/act-grid');
+			}, (reason) => {
+				this._nav.showSnackBar(`Project saving failed! ${reason}`);
 			});
 		}
 	}
@@ -533,6 +529,47 @@ export class Project {
 	refresh(rev :string) {
 		
 		this._rev = rev;	
+	}
+	
+	save(http :HttpClient) :Promise<void> {
+		
+		return new Promise((resolve, reject) => {
+			let dbObjUrl = `/_data/${this._id}`; 
+			http.put(dbObjUrl, this.stringify(), { "headers": new HttpHeaders({ "Content-Type": "application/json"})})
+				.subscribe((putResp :any) => {
+				if(putResp.ok) {
+					resolve();
+				}
+				else
+					reject(`\uD83D\uDCA3 !!! ${putResp.reason} !!! \uD83D\uDCA3`); 
+			});
+		});
+	}
+	
+	static create(actGrp: string, usrId :string, http :HttpClient): Promise<Project> {
+		
+		return new Promise((resolve, reject) => {
+			http.get('/_uuid').subscribe((data :any) => {
+				let p = new Project({
+					"_id": data.uuid,
+					"type": "Project",
+					"name": "New project",
+					"descr": "",
+					"usrAdminList": [usrId],
+					"usrAssignList": [usrId],
+					"actGrp": actGrp,
+					"dateStart": new Date(),
+					"dateEnd": '',
+					"effortUnit": '0:15', // TODO Shoud be set by general / user preferences
+					"effortCap": '' 					
+				});
+				p.save(http).then(() => {
+					resolve(p);	
+				}, (reason) => {
+					reject(reason);
+				});
+			});
+		});
 	}
 }
 

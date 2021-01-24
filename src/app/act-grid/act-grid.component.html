@@ -20,8 +20,9 @@
 				</span>
 			</div>
 			<div class="grid-act-row-cell   c02 act-control">
-				<button mat-icon-button color="primary" *ngIf="activity.type!='Project'" 
-					title="New {{activity.type=='ActGrp'?'activity group':'project'}}"> <!--  TODO can't set aria-label? -->
+				<button mat-icon-button color="primary" *ngIf="activity.type!='Project'"  
+					title="New {{activity.type!='ActGrp'?'activity group':'project'}}"
+					(click)="activity.type!='ActGrp'?createActGrp(activity.id):createProject(activity.id);"> <!--  TODO can't set aria-label? -->
 					<mat-icon>add</mat-icon>
 				</button>
 			</div>

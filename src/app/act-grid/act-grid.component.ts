@@ -7,11 +7,19 @@ import { HttpClient }
 import { AfterContentChecked, Component, OnDestroy, OnInit } 	
 	from '@angular/core';
 
-import * as _ 					from 'lodash';
+import * as _ 					
+	from 'lodash';
 
-import { UserService } from '../core.services';
-import { DateTimeUtil, UI } from '../core.utils';
-import { NavigationComponent }	from '../navigation/navigation.component';
+import { UserService } 
+	from '../core.services';
+import { DateTimeUtil, History, UI } 
+	from '../core.utils';
+import { NavigationComponent }	
+	from '../navigation/navigation.component';
+import { Project } 
+	from '../project/project.component';
+import { Router } 
+	from '@angular/router';
 
 @Component({
 	selector: 'app-act-grid',
@@ -23,7 +31,10 @@ export class ActGridComponent implements AfterContentChecked, OnDestroy, OnInit 
 	myActList :Array<Activity> = []; 
 	currentWeek :Array<any>;
 	
-	constructor(private _http :HttpClient, private _nav :NavigationComponent) { 
+	constructor(
+		private _http :HttpClient, 
+		private _nav :NavigationComponent,
+		private _router :Router) { 
 		
 		this._nav.showWait(true);
 		this.currentWeek = DateTimeUtil.computeWeek(new Date());
@@ -110,6 +121,26 @@ export class ActGridComponent implements AfterContentChecked, OnDestroy, OnInit 
 					c.style.paddingRight = `${sbw}px`;
 			});
 		}
+	}
+	
+	createActArea() :void {
+		
+		console.log('TODO')
+	}
+	
+	createActGrp(actAreaId :string) :void {
+		
+		console.log('TODO')
+	}
+	
+	createProject(actGrpId :string) :void {
+		
+		Project.create(actGrpId, UserService.getLoggedUser().id, this._http).then((p) => {
+			History.make(`Created new project`, p._id, null, null, this._http); 
+			this._router.navigateByUrl(`/project/${p._id}`);
+		}, (reason) => {
+			this._nav.showSnackBar(`Project creation failed: ${reason}`);
+		});
 	}
 }
 

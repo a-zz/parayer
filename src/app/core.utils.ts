@@ -188,7 +188,6 @@ export class History {
 					});
 					if (h.length == 0) {//Can't aggregate, new entry
 						History.make(summary, attachedTo, relatedTo, null, http).then(() => {
-							console.log('*')
 							resolve();
 						}, (reason) => {
 							reject(`\uD83D\uDCA3 !!! ${reason} !!! \uD83D\uDCA3`);
