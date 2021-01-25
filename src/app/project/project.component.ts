@@ -128,7 +128,7 @@ export class ProjectComponent implements AfterContentChecked {
 	}
 	
 	// -- GENERAL tab --
-	fcName :FormControl = new FormControl('', [Validators.required]);;
+	fcName :FormControl = new FormControl('', [Validators.required]);
 	fcDescr :FormControl = new FormControl('');
 	fcDateStart :FormControl = new FormControl('');
 	fcDateEnd :FormControl = new FormControl('');
