@@ -59,12 +59,12 @@ export class ProjectComponent implements AfterContentChecked {
 				ActGroup.load(this.project.actGrp, this._http).then((g: ActGroup) => {
 					ActArea.load(g.actArea, this._http).then((a: ActArea) => {
 						this._nav.setLocation(`Project :: ${a.name} > ${g.name} > ${this.project!.name}`, 'map');
-					});					
+					});
 				});
-				this._nav.showWait(false);			
+				this._nav.showWait(false);
 			}, (reason :string) => {
 				this._nav.showSnackBar(reason);
-				this._nav.showWait(false);						
+				this._nav.showWait(false);
 			});
 	}
 
