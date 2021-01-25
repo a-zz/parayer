@@ -17,6 +17,8 @@ import { ActivatedRoute, Router }
 
 import * as _
 	from 'lodash';
+import { ActArea } from '../act-area/act-area.model';
+import { ActGroup } from '../act-group/act-group.model';
 
 import { UserService } 
 	from '../core.services';
@@ -54,7 +56,11 @@ export class ProjectComponent implements AfterContentChecked {
 				this.fcDateEnd.setValue(this.project.dateEnd);
 				this.fcEffortUnit.setValue(this.project.effortUnit);
 				this.fcEffortCap.setValue(this.project.effortCap);
-				this._nav.setLocation(`Project :: ${this.project.name}`, 'map');
+				ActGroup.load(this.project.actGrp, this._http).then((g: ActGroup) => {
+					ActArea.load(g.actArea, this._http).then((a: ActArea) => {
+						this._nav.setLocation(`Project :: ${a.name} > ${g.name} > ${this.project!.name}`, 'map');
+					});					
+				});
 				this._nav.showWait(false);			
 			}, (reason :string) => {
 				this._nav.showSnackBar(reason);
@@ -123,7 +129,6 @@ export class ProjectComponent implements AfterContentChecked {
 			}
 			break;
 		default:	// -- General --
-	
 		}
 	}
 	

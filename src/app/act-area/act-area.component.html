@@ -1,1 +1,28 @@
-<p>act-area works!</p>
+<div class="tab-content" *ngIf="actArea!=null">
+	<form (submit)="save()">
+		<mat-form-field appearance="fill" class="act-area-form-field">
+			<mat-label id="act-area-name-label">Activity area name</mat-label>
+			<input matInput placeholder="Activity area name" aria-labelledby="act-area-name-label" 
+				[formControl]="fcName" [errorStateMatcher]="fcErr">
+			<mat-hint>(required)</mat-hint>
+			<mat-error *ngIf="fcName.hasError('required')">
+				A name is required for the activity area
+			</mat-error>
+		</mat-form-field>
+		<br>
+		<mat-form-field appearance="fill" class="act-area-form-field">
+			<mat-label id="act-area-descr-label">Activity area description</mat-label>
+			<textarea matInput placeholder="Activity area description" aria-labelledby="act-area-descr-label" 
+				[formControl]="fcDescr" [errorStateMatcher]="fcErr"></textarea>
+		</mat-form-field>
+		<br>
+		[TODO: usr admin list]
+		<br>
+		[TODO: usr assign list]
+		<br><br>
+		<button type="submit" mat-button color="primary">SAVE</button>&nbsp;
+		<a mat-button routerLink="/act-grid">CANCEL</a>
+	</form>
+	<br>
+	[TODO: Show related groups]
+</div>

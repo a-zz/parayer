@@ -14,9 +14,9 @@ import { MyPreferencesComponent } from './my-preferences/my-preferences.componen
 import { ProjectComponent } 	from './project/project.component';
 
 const routes: Routes = [
-	{ path: 'act-area', 		component: ActAreaComponent },
+	{ path: 'act-area/:id', 	component: ActAreaComponent },
 	{ path: 'act-grid', 		component: ActGridComponent },	
-	{ path: 'act-group', 		component: ActGroupComponent },
+	{ path: 'act-group/:id',	component: ActGroupComponent },
 	{ path: 'my-account', 		component: MyAccountComponent },
 	{ path: 'my-preferences',	component: MyPreferencesComponent },	
 	{ path: 'project/:id',		component: ProjectComponent },

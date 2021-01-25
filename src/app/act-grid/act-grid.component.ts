@@ -7,7 +7,7 @@ import { HttpClient }
 import { AfterContentChecked, Component, OnDestroy, OnInit } 	
 	from '@angular/core';
 
-import * as _ 					
+import * as _
 	from 'lodash';
 
 import { UserService } 
@@ -20,6 +20,8 @@ import { Project }
 	from '../project/project.model';
 import { Router } 
 	from '@angular/router';
+import { ActGroup } from '../act-group/act-group.model';
+import { ActArea } from '../act-area/act-area.model';
 
 @Component({
 	selector: 'app-act-grid',
@@ -124,12 +126,22 @@ export class ActGridComponent implements AfterContentChecked, OnDestroy, OnInit 
 	
 	createActArea() :void {
 		
-		console.log('TODO')
+		ActArea.create(UserService.getLoggedUser().id, this._http).then((a) => {
+			History.make(`Created new activity group`, a._id, null, null, this._http); 
+			this._router.navigateByUrl(`/act-area/${a._id}`);
+		}, (reason) => {
+			this._nav.showSnackBar(`Activity area creation failed: ${reason}`);
+		});
 	}
 	
 	createActGrp(actAreaId :string) :void {
 		
-		console.log('TODO')
+		ActGroup.create(actAreaId, UserService.getLoggedUser().id, this._http).then((g) => {
+			History.make(`Created new activity group`, g._id, null, null, this._http); 
+			this._router.navigateByUrl(`/act-group/${g._id}`);
+		}, (reason) => {
+			this._nav.showSnackBar(`Activity group creation failed: ${reason}`);
+		});	
 	}
 	
 	createProject(actGrpId :string) :void {

@@ -1,1 +1,28 @@
-<p>act-group works!</p>
+<div class="tab-content" *ngIf="actGroup!=null">
+	<form (submit)="save()">
+		<mat-form-field appearance="fill" class="act-group-form-field">
+			<mat-label id="act-group-name-label">Activity group name</mat-label>
+			<input matInput placeholder="Activity group name" aria-labelledby="act-group-name-label" 
+				[formControl]="fcName" [errorStateMatcher]="fcErr">
+			<mat-hint>(required)</mat-hint>
+			<mat-error *ngIf="fcName.hasError('required')">
+				A name is required for the activity group
+			</mat-error>
+		</mat-form-field>
+		<br>
+		<mat-form-field appearance="fill" class="act-group-form-field">
+			<mat-label id="act-group-descr-label">Activity group description</mat-label>
+			<textarea matInput placeholder="Activity group description" aria-labelledby="act-group-descr-label" 
+				[formControl]="fcDescr" [errorStateMatcher]="fcErr"></textarea>
+		</mat-form-field>
+		<br>
+		[TODO: usr admin list]
+		<br>
+		[TODO: usr assign list]
+		<br><br>
+		<button type="submit" mat-button color="primary">SAVE</button>&nbsp;
+		<a mat-button routerLink="/act-grid">CANCEL</a>
+	</form>
+	<br>
+	[TODO: Show related projects]
+</div>
