@@ -47,7 +47,7 @@ export class ActAreaComponent {
 				this.actArea = a;
 				this.fcName.setValue(this.actArea.name);
 				this.fcDescr.setValue(this.actArea.descr);
-				this._nav.setLocation(`Activity area :: ${this.actArea.name}`, 'view_module');
+				this._nav.setLocation(`Activity area`, [ { "text": this.actArea.name, "route": this.actArea.getRoute() } ], 'view_module');
 				this._nav.showWait(false);
 			}, (reason: string) => {
 				this._nav.showSnackBar(reason);

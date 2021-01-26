@@ -16,7 +16,7 @@ export class MyAccountComponent implements OnInit {
 
 	constructor(private _nav: NavigationComponent) { 
 		
-		this._nav.setLocation('My account', 'person');
+		this._nav.setLocation('My account', null, 'person');
 	}
 
 	ngOnInit(): void {

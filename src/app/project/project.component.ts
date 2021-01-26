@@ -58,7 +58,12 @@ export class ProjectComponent implements AfterContentChecked {
 				this.fcEffortCap.setValue(this.project.effortCap);
 				ActGroup.load(this.project.actGrp, this._http).then((g: ActGroup) => {
 					ActArea.load(g.actArea, this._http).then((a: ActArea) => {
-						this._nav.setLocation(`Project :: ${a.name} > ${g.name} > ${this.project!.name}`, 'map');
+						this._nav.setLocation(`Project`, 
+						[
+							{ "text": a.name, "route": a.getRoute() }, 
+							{ "text": g.name, "route": g.getRoute() },
+							{ "text": this.project!.name, "route": this.project!.getRoute() }
+						], 'map');
 					});
 				});
 				this._nav.showWait(false);

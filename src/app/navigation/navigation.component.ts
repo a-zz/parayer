@@ -32,9 +32,10 @@ import { SimpleConfirmDialogComponent } from './simple-confirm-dialog.component'
 })
 export class NavigationComponent {
 
-	public _locationIcon :string = '';
-	public _locationText :string = '';
-	public _waiting :boolean = true;
+	public locationIcon :string = '';
+	public locationTitle: string ='';
+	public locationLinks :Array<{"text" :string, "route" :string}>|null = null;
+	public waiting :boolean = true;
 
 	isHandset$: Observable<boolean> = this._breakpointObserver.observe(Breakpoints.Handset)
 		.pipe(
@@ -53,14 +54,15 @@ export class NavigationComponent {
 		
 	showWait(show :boolean) :void {
 		
-		this._waiting = show;
+		this.waiting = show;
 	}
-	
-	setLocation(text :string, icon :string) :void {
+		
+	setLocation(title :string, links :Array<{"text" :string, "route" :string}>|null, icon :string) :void {
 		
 		// TODO Improve icon-text alignment (and -side-toggle button, when shown)
-		this._locationText = text;
-		this._locationIcon = icon;
+		this.locationTitle = title;
+		this.locationLinks = links;
+		this.locationIcon = icon;
 	}
 	
 	showSnackBar(txt :string) :void {

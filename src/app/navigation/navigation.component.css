@@ -35,6 +35,16 @@
 	margin-right: 0.5em;
 }
 
+a.location-link {
+	text-decoration: none;
+	color: unset;
+}
+
+a.location-link:hover {
+	text-decoration: underline darkorange dotted 0.1em; /* TODO Should be accent */
+	color: unset;
+}
+
 .main-cntnr-cntnr {	
 	overflow: hidden;
 }

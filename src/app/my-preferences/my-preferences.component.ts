@@ -16,7 +16,7 @@ export class MyPreferencesComponent implements OnInit {
 
 	constructor(private _nav: NavigationComponent) { 
 		
-		this._nav.setLocation('My preferences', 'build');
+		this._nav.setLocation('My preferences', null, 'build');
 	}
 
 	ngOnInit(): void {

@@ -51,7 +51,11 @@ export class ActGroupComponent {
 				this.fcName.setValue(this.actGroup.name);
 				this.fcDescr.setValue(this.actGroup.descr);
 				ActArea.load(this.actGroup.actArea, this._http).then((a: ActArea) => {
-					this._nav.setLocation(`Activity group :: ${a.name} > ${this.actGroup!.name}`, 'view_list');
+					this._nav.setLocation(`Activity group`, 
+						[
+							{ "text": a.name, "route": a.getRoute() }, 
+							{ "text": this.actGroup!.name, "route": this.actGroup!.getRoute() }
+						], 'view_list');
 				});
 				this._nav.showWait(false);			
 			}, (reason :string) => {

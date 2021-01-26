@@ -41,7 +41,7 @@ export class ActGridComponent implements AfterContentChecked, OnDestroy, OnInit 
 		this._nav.showWait(true);
 		this.currentWeek = DateTimeUtil.computeWeek(new Date());
 		this.getActivity();
-		this._nav.setLocation('My activity', 'table_chart');
+		this._nav.setLocation('My activity', null, 'table_chart');
 	}
 	
 	ngAfterContentChecked() :void {

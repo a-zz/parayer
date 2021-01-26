@@ -116,6 +116,11 @@ export class Project {
 			});
 		});
 	}
+	
+	getRoute() :string {
+		
+		return `/project/${this._id}`;
+	}
 }
 
 export class ProjectTask {

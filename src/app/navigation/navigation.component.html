@@ -27,12 +27,18 @@
 				*ngIf="isHandset$ | async">
 				<mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
 			</button>
-			<div class="location-cntnr">
-				<mat-icon class="location-icon">{{_locationIcon}}</mat-icon>&nbsp;{{_locationText}}
+			<div class="location-cntnr" *ngIf="locationTitle!=''">
+				<mat-icon class="location-icon">{{locationIcon}}</mat-icon>&nbsp;
+				{{locationTitle}}
+				<span *ngIf="locationLinks?.length>0">&nbsp;&nbsp;::&nbsp;&nbsp;</span>
+				<span *ngFor="let e of locationLinks; last as isLast">
+					<a class="location-link" routerLink="{{e.route}}">{{e.text}}</a>
+					<span *ngIf="!isLast">&nbsp;&nbsp;&#9656;&nbsp;&nbsp;</span>
+				</span>
 			</div>
 			<span class="mat-toolbar-spacer"></span>
 			<mat-icon class="blinking" id="nav-wait-icon" aria-hidden="false" aria-label="Please wait..."
-				*ngIf="_waiting">hourglass_full</mat-icon>
+				*ngIf="waiting">hourglass_full</mat-icon>
 		</mat-toolbar>
 		<div class="main-cntnr">
 			<router-outlet></router-outlet>
