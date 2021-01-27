@@ -4,7 +4,7 @@
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 import { HttpClient }
 	from '@angular/common/http';
-import { AfterContentChecked, Component, OnDestroy, OnInit } 	
+import { AfterContentChecked, AfterViewChecked, Component, OnDestroy, OnInit } 	
 	from '@angular/core';
 
 import * as _
@@ -28,7 +28,7 @@ import { ActArea } from '../act-area/act-area.model';
 	templateUrl: './act-grid.component.html',
 	styleUrls: ['./act-grid.component.css']
 })
-export class ActGridComponent implements AfterContentChecked, OnDestroy, OnInit {
+export class ActGridComponent implements AfterContentChecked, AfterViewChecked, OnDestroy, OnInit {
 
 	myActList :Array<Activity> = []; 
 	currentWeek :Array<any>;
@@ -43,15 +43,21 @@ export class ActGridComponent implements AfterContentChecked, OnDestroy, OnInit 
 		this.getActivity();
 		this._nav.setLocation('My activity', null, 'table_chart');
 	}
+		
+	ngOnInit() :void {
+		
+		window.addEventListener('resize', this.fixGridLayout);
+	}
 	
+	// FIXME Confirm it's not needed, remove
 	ngAfterContentChecked() :void {
 		
 		this.fixGridLayout();
 	}
-	
-	ngOnInit() :void {
+
+	ngAfterViewChecked() : void {
 		
-		window.addEventListener('resize', this.fixGridLayout);
+		this.fixGridLayout();
 	}
 	
 	ngOnDestroy() :void {
@@ -120,6 +126,7 @@ export class ActGridComponent implements AfterContentChecked, OnDestroy, OnInit 
 				c.style.maxWidth = `${(wdthpc[i]*twdth)}px`;
 				if(_.indexOf(c.classList, 'sbph')!=-1)
 					c.style.paddingRight = `${sbw}px`;
+				
 			});
 		}
 	}
@@ -152,6 +159,21 @@ export class ActGridComponent implements AfterContentChecked, OnDestroy, OnInit 
 		}, (reason) => {
 			this._nav.showSnackBar(`Project creation failed: ${reason}`);
 		});
+	}
+	
+	prevWeek() :void {
+		
+		this.goToDate(DateTimeUtil.addDays(this.currentWeek[3].d as Date, -7));
+	}
+	
+	nextWeek() :void {
+		
+		this.goToDate(DateTimeUtil.addDays(this.currentWeek[3].d as Date, 7));
+	}
+	
+	goToDate(target :Date) :void {
+		
+		this.currentWeek = DateTimeUtil.computeWeek(target);
 	}
 }
  

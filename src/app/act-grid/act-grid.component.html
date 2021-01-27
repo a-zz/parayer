@@ -45,16 +45,16 @@
 			<div class="grid-header-cell c04 effort-sum sbph">00:00</div>		
 		</div>	
 		<br>
-		<div class="grid-header-middle">		
+		<div class="grid-header-middle">
 			<div class="grid-header-cell c01"></div>
 			<div class="grid-header-cell c02 calendar-control">
-				<button mat-icon-button  aria-label="Go to previous week" title="Go to previous week">
+				<button mat-icon-button  aria-label="Go to previous week" title="Go to previous week" (click)="prevWeek();">
 					<mat-icon>skip_previous</mat-icon>
 				</button>			
 			</div>
 			<div class="grid-header-cell c03 day-label {{d.today?'today':''}}" *ngFor="let d of currentWeek">{{d.dt}}<br>{{d.dmt}}</div>
 			<div class="grid-header-cell c04 calendar-control sbph">
-				<button mat-icon-button  aria-label="Go to next week" title="Go to next week">
+				<button mat-icon-button  aria-label="Go to next week" title="Go to next week" (click)="nextWeek();">
 					<mat-icon>skip_next</mat-icon>
 				</button>			
 			</div>

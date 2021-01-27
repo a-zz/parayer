@@ -20,12 +20,13 @@ export class DateTimeUtil {
 			let date = new Date(selectedDate);
 			date.setDate(date.getDate() + d);
 			week.push({
+				"d": date,
 				"dt": date.toLocaleString(window.navigator.language, { weekday: 'short' }),
 				"dm": date.getDate(),
 				"mn": date.getMonth() + 1,
 				"mt": date.toLocaleString(window.navigator.language, { month: 'short' }),
 				"dmt": date.toLocaleString(window.navigator.language, { day: "2-digit", month: "short" }),
-				"today": (d == 0) // FIXME Not working well on sundays
+				"today": DateTimeUtil.isToday(date) // FIXME Not working well on sundays
 			});
 		}
 		return week;
@@ -44,6 +45,13 @@ export class DateTimeUtil {
 	static diff(d1: Date, d2: Date) :number{
 
 		return d1.getTime() - d2.getTime();
+	}
+	
+	static addDays(d: Date, days :number) :Date {
+		
+		var r = new Date(d);
+		r.setDate(r.getDate() + days);
+		return r;
 	}
 
 	static isToday(d: Date) :boolean {
