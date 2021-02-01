@@ -23,6 +23,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
@@ -71,6 +72,7 @@ import { SimpleConfirmDialogComponent } from './navigation/simple-confirm-dialog
 		MatSelectModule,
 		MatSidenavModule,
 		MatSnackBarModule,
+		MatTableModule,
 		MatTabsModule,
 		MatToolbarModule,
 		ReactiveFormsModule

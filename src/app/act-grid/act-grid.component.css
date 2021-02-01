@@ -12,6 +12,10 @@ div {
 	overflow: hidden;
 }
 
+.grid {
+	width: 100%;
+}
+
 .grid-header-top {
 	display: table-row;	
 	background: white; /* TODO background color primary */
@@ -26,9 +30,7 @@ div {
 	font-weight: bold;	
 }
 
-.today {
-	color: darkorange; /* TODO Should be accent */
-}
+
 
 .act-header-label {
 	text-align: left;
@@ -131,7 +133,6 @@ a.act-link:hover {
 
 span.act-effort-control-mini {
 	width: 1em;
-	height: auto;
 	text-align: center;
 	height: 1em;
 	padding: 0.2em;
@@ -212,3 +213,93 @@ span.act-effort-control-mini:hover {
 .grid-time-slot {
 	display: table-cell;
 }
+
+/* TODO Test code ******************************************* */
+.grid-cntnr {
+  overflow: auto;
+}
+
+.grid-daily-header {
+	height: 8em;
+}
+
+.grid-daily-footer {
+	height: 8em;
+}
+
+.grid-day-label {
+	width: 100%;
+	text-align: center;
+	font-weight: bold;
+}
+
+.grid-day-label-today {
+	color: darkorange; /* TODO Should be accent */
+}
+
+.grid-left-cell {
+	text-align: right;
+	vertical-align: top;
+	width: 4em;
+	max-width: 4em;
+	height: 4em;
+}
+
+.grid-right-cell {
+	text-align: left;
+	vertical-align: top;
+	width: 4em;
+	max-width: 4em;
+	height: 4em;
+}
+
+.mat-table-sticky {
+  opacity: 1;
+}
+
+.mat-row {
+	border: none;
+}
+
+.week-selector {
+	width: 10em;
+	margin-left: 1em;
+	margin-right: 1em;
+}
+
+
+
+.example-sticky-toggle-group {
+  margin: 8px;
+}
+
+.mat-column-filler {
+  padding: 0 8px;
+  font-size: 10px;
+  text-align: center;
+}
+
+.mat-header-cell, .mat-footer-cell {
+  min-width: 80px;
+  box-sizing: border-box;
+  border-left: 1px lightgrey solid;
+  border-right: none;
+  border-bottom: none;
+  border-top: none;
+  height: 100%;
+}
+
+.mat-cell {
+  min-width: 80px;
+  box-sizing: border-box;
+  border-left: 1px lightgrey solid;
+  border-right: none;
+  border-bottom: 1px lightgrey dashed;
+  border-top: none;
+}
+
+.mat-header-row, .mat-footer-row, .mat-row {
+  width: 100%;
+ 
+}
+

@@ -1,4 +1,61 @@
-<div id="act-grid" class="grid-cntnr mat-elevation-z8">
+<div class="grid-cntnr">
+	<mat-table class="grid" [dataSource]="tslots">
+
+		<ng-container matColumnDef="left" [sticky]="true">
+			<mat-header-cell *matHeaderCellDef>
+				<button mat-icon-button  aria-label="Go to previous week" title="Go to previous week" (click)="prevWeek();">
+					<mat-icon>skip_previous</mat-icon>
+				</button>
+			</mat-header-cell>
+			<mat-cell *matCellDef="let line"><span class="grid-left-cell"> {{line.name}}</span></mat-cell>
+			<mat-footer-cell *matFooterCellDef>
+				<mat-date-range-input [rangePicker]="weekSelector">
+    				<input matStartDate [(ngModel)]="currentWeek[0].d" (dateChange)="selectWeek($event.value);">
+    				<input matEndDate id="weekSelectorEnd" [(ngModel)]="currentWeek[6].d">
+  				</mat-date-range-input>
+  				<mat-datepicker-toggle matSuffix [for]="weekSelector"></mat-datepicker-toggle>
+  				<mat-date-range-picker #weekSelector></mat-date-range-picker>			
+			</mat-footer-cell>
+		</ng-container>
+
+		<ng-container *ngFor="let wd of currentWeek; index as i; trackBy: trackByIndex" matColumnDef="d{{i+1}}">
+			<mat-header-cell *matHeaderCellDef>
+				<span class="grid-day-label {{wd.today?'grid-day-label-today':''}}">
+					{{wd.dt}}<br>{{wd.dmt}}
+				</span>
+			</mat-header-cell>
+			<mat-cell *matCellDef="let line"> {{line[i]}} </mat-cell>
+			<mat-footer-cell *matFooterCellDef>
+				Attend.: 0:00 (+0:00)
+				<br>
+				Effort: 0:00 (-0:00)
+			</mat-footer-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="right" [sticky]="true">
+			<mat-header-cell *matHeaderCellDef>
+				<button mat-icon-button  aria-label="Go to next week" title="Go to next week" (click)="nextWeek();">
+					<mat-icon>skip_next</mat-icon>
+				</button>			
+			</mat-header-cell>
+			<mat-cell *matCellDef="let line"><span class="grid-right-cell"> {{line.name}} </span></mat-cell>
+			<mat-footer-cell *matFooterCellDef>
+				Attend.: 0:00 (+0:00)
+				<br>
+				Effort: 0:00 (-0:00)			
+			</mat-footer-cell>
+		</ng-container>
+
+		<mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="grid-daily-header mat-elevation-z4"></mat-header-row>
+
+		<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+		<mat-footer-row *matFooterRowDef="displayedColumns; sticky: true" class="grid-daily-footer mat-elevation-z4"></mat-footer-row>
+	</mat-table>
+</div>
+
+
+<!--div id="act-grid" class="grid-cntnr mat-elevation-z8">
 	<div class="grid-header-top mat-elevation-z4">
 		<div class="grid-header-cell c01 act-header-label">Activity</div>
 		<div class="grid-header-cell c02 act-control">
@@ -22,7 +79,7 @@
 			<div class="grid-act-row-cell   c02 act-control">
 				<button mat-icon-button color="primary" *ngIf="activity.type!='Project'"  
 					title="New {{activity.type!='ActGrp'?'activity group':'project'}}"
-					(click)="activity.type!='ActGrp'?createActGrp(activity.id):createProject(activity.id);"> <!--  TODO can't set aria-label? -->
+					(click)="activity.type!='ActGrp'?createActGrp(activity.id):createProject(activity.id);"> 
 					<mat-icon>add</mat-icon>
 				</button>
 			</div>
@@ -45,16 +102,16 @@
 			<div class="grid-header-cell c04 effort-sum sbph">00:00</div>		
 		</div>	
 		<br>
-		<div class="grid-header-middle">		
+		<div class="grid-header-middle">
 			<div class="grid-header-cell c01"></div>
 			<div class="grid-header-cell c02 calendar-control">
-				<button mat-icon-button  aria-label="Go to previous week" title="Go to previous week">
+				<button mat-icon-button  aria-label="Go to previous week" title="Go to previous week" (click)="prevWeek();">
 					<mat-icon>skip_previous</mat-icon>
 				</button>			
 			</div>
 			<div class="grid-header-cell c03 day-label {{d.today?'today':''}}" *ngFor="let d of currentWeek">{{d.dt}}<br>{{d.dmt}}</div>
 			<div class="grid-header-cell c04 calendar-control sbph">
-				<button mat-icon-button  aria-label="Go to next week" title="Go to next week">
+				<button mat-icon-button  aria-label="Go to next week" title="Go to next week" (click)="nextWeek();">
 					<mat-icon>skip_next</mat-icon>
 				</button>			
 			</div>
@@ -74,4 +131,4 @@
 			<div class="time-slot-label-right c04 ">{{h}}</div>
 		</div>
 	</div>
-</div>
+</div-->

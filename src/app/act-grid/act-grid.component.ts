@@ -4,7 +4,7 @@
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 import { HttpClient }
 	from '@angular/common/http';
-import { AfterContentChecked, Component, OnDestroy, OnInit } 	
+import { AfterContentChecked, AfterViewChecked, Component, OnDestroy, OnInit, ViewChild } 	
 	from '@angular/core';
 
 import * as _
@@ -22,16 +22,50 @@ import { Router }
 	from '@angular/router';
 import { ActGroup } from '../act-group/act-group.model';
 import { ActArea } from '../act-area/act-area.model';
+import { MatButtonToggleGroup } from '@angular/material/button-toggle';
+import { MatTable } from '@angular/material/table';
+import { MatDatepickerInputEvent, MatEndDate } from '@angular/material/datepicker';
+import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
 	selector: 'app-act-grid',
 	templateUrl: './act-grid.component.html',
 	styleUrls: ['./act-grid.component.css']
 })
-export class ActGridComponent implements AfterContentChecked, OnDestroy, OnInit {
+//export class ActGridComponent implements AfterContentChecked, AfterViewChecked, OnDestroy, OnInit {
+export class ActGridComponent  {
 
+	@ViewChild(MatTable) table :MatTable<any> | undefined;
+	displayedColumns: string[] = ['left', 'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'right'];
 	myActList :Array<Activity> = []; 
 	currentWeek :Array<any>;
+	tslots: Array<GridLine> = [
+	  	{ "name": "00:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "01:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "02:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "03:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "04:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "05:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "06:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "07:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "08:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "09:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "10:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "11:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "12:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "13:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "14:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "15:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "16:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "17:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "18:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "19:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "20:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "21:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "22:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+		{ "name": "23:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
+	];
+	weekSelectorFG :FormGroup;
 	
 	constructor(
 		private _http :HttpClient, 
@@ -40,18 +74,27 @@ export class ActGridComponent implements AfterContentChecked, OnDestroy, OnInit 
 		
 		this._nav.showWait(true);
 		this.currentWeek = DateTimeUtil.computeWeek(new Date());
-		this.getActivity();
+		this.weekSelectorFG = new FormGroup({
+      		start: new FormControl(this.currentWeek[0].d),
+      		end: new FormControl(this.currentWeek[6].d)
+    	});
 		this._nav.setLocation('My activity', 'table_chart');
 	}
+	/*	
+	ngOnInit() :void {
+		
+		window.addEventListener('resize', this.fixGridLayout);
+	}
 	
+	// FIXME Confirm it's not needed, remove
 	ngAfterContentChecked() :void {
 		
 		this.fixGridLayout();
 	}
-	
-	ngOnInit() :void {
+
+	ngAfterViewChecked() : void {
 		
-		window.addEventListener('resize', this.fixGridLayout);
+		this.fixGridLayout();
 	}
 	
 	ngOnDestroy() :void {
@@ -120,6 +163,7 @@ export class ActGridComponent implements AfterContentChecked, OnDestroy, OnInit 
 				c.style.maxWidth = `${(wdthpc[i]*twdth)}px`;
 				if(_.indexOf(c.classList, 'sbph')!=-1)
 					c.style.paddingRight = `${sbw}px`;
+				
 			});
 		}
 	}
@@ -153,8 +197,59 @@ export class ActGridComponent implements AfterContentChecked, OnDestroy, OnInit 
 			this._nav.showSnackBar(`Project creation failed: ${reason}`);
 		});
 	}
+	
+	*/
+	
+	// Required to force table header to be refreshed on week change 
+	trackByIndex(i :number) {
+		
+		return i;
+	}
+	
+	prevWeek() :void {
+		
+		this.goToDate(DateTimeUtil.addDays(this.currentWeek[3].d as Date, -7));
+	}
+	
+	nextWeek() :void {
+		
+		this.goToDate(DateTimeUtil.addDays(this.currentWeek[3].d as Date, 7));
+	}
+	
+	selectWeek(forDate :Date) {
+    			
+		this.goToDate(forDate);
+  	}
+	
+	
+	goToDate(target :Date) :void {
+		
+		this.currentWeek = DateTimeUtil.computeWeek(target);
+		// TODO Fill in end date in week selector
+		// TODO Reload this.tslots		
+		this.table!.renderRows();
+	}
+		
+	// TODO Test code
+  
+  //dataSource = ELEMENT_DATA;
+
 }
  
+export interface GridLine {
+	
+	"name" :string;
+	"d1" :string;
+	"d2" :string;
+	"d3" :string;
+	"d4" :string;
+	"d5" :string;
+	"d6" :string;
+	"d7" :string;
+}
+
+
+
 export class Activity {
 			
 	id :string;

@@ -15,17 +15,19 @@ export class DateTimeUtil {
 
 	static computeWeek(selectedDate: Date) :Array<any> {
 
+		// FIXME Week should be computed according to user locale (i.e. first day of week)
 		let week = [];
 		for (let d = 1 - selectedDate.getDay(); d <= 7 - selectedDate.getDay(); d++) {
 			let date = new Date(selectedDate);
 			date.setDate(date.getDate() + d);
 			week.push({
+				"d": date,
 				"dt": date.toLocaleString(window.navigator.language, { weekday: 'short' }),
 				"dm": date.getDate(),
 				"mn": date.getMonth() + 1,
 				"mt": date.toLocaleString(window.navigator.language, { month: 'short' }),
 				"dmt": date.toLocaleString(window.navigator.language, { day: "2-digit", month: "short" }),
-				"today": (d == 0) // FIXME Not working well on sundays
+				"today": DateTimeUtil.isToday(date)
 			});
 		}
 		return week;
@@ -45,6 +47,13 @@ export class DateTimeUtil {
 
 		return d1.getTime() - d2.getTime();
 	}
+
+    static addDays(d: Date, days :number) :Date {
+            
+        var r = new Date(d);
+        r.setDate(r.getDate() + days);
+        return r;
+    }
 
 	static isToday(d: Date) :boolean {
 
