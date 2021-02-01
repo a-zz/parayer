@@ -25,7 +25,7 @@
 				</span>
 			</mat-header-cell>
 			<mat-cell *matCellDef="let line"> {{line[i]}} </mat-cell>
-			<mat-footer-cell *matFooterCellDef>
+			<mat-footer-cell *matFooterCellDef class="day-effort-link">
 				Attend.: 0:00 (+0:00)
 				<br>
 				Effort: 0:00 (-0:00)
@@ -39,7 +39,7 @@
 				</button>			
 			</mat-header-cell>
 			<mat-cell *matCellDef="let line"><span class="grid-right-cell"> {{line.name}} </span></mat-cell>
-			<mat-footer-cell *matFooterCellDef>
+			<mat-footer-cell *matFooterCellDef class="week-effort-summary">
 				Attend.: 0:00 (+0:00)
 				<br>
 				Effort: 0:00 (-0:00)			

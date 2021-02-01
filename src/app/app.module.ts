@@ -28,13 +28,13 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { ActAreaComponent } from './act-area/act-area.component';
-import { ActGridComponent } from './act-grid/act-grid.component';
 import { ActGroupComponent } from './act-group/act-group.component';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { MyAccountComponent } from './my-account/my-account.component';
 import { MyPreferencesComponent } from './my-preferences/my-preferences.component';
 import { NavigationComponent } from './navigation/navigation.component';
+import { PlanAndTrackComponent } from './plan-and-track/plan-and-track.component';
 import { ProjectComponent } from './project/project.component';
 import { RefChipsComponent } from './ref-chips/ref-chips.component';
 import { SimpleConfirmDialogComponent } from './navigation/simple-confirm-dialog.component';
@@ -42,12 +42,12 @@ import { SimpleConfirmDialogComponent } from './navigation/simple-confirm-dialog
 @NgModule({
 	declarations: [
 		ActAreaComponent,
-		AppComponent,
-		ActGridComponent,		
+		AppComponent,		
 		ActGroupComponent,
 		MyAccountComponent,
 		MyPreferencesComponent,
 		NavigationComponent,
+		PlanAndTrackComponent,
 		ProjectComponent,
 		RefChipsComponent,
 		SimpleConfirmDialogComponent

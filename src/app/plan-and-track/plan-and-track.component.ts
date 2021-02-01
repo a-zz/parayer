@@ -1,6 +1,6 @@
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
-// parayer :: ActGridComponent
-// Activity grid (and main) component
+// parayer :: PlanAndTrackComponent
+// Calendar & effort grid (and main) component
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 import { HttpClient }
 	from '@angular/common/http';
@@ -28,12 +28,12 @@ import { MatDatepickerInputEvent, MatEndDate } from '@angular/material/datepicke
 import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
-	selector: 'app-act-grid',
-	templateUrl: './act-grid.component.html',
-	styleUrls: ['./act-grid.component.css']
+	selector: 'app-plan-and-track',
+	templateUrl: './plan-and-track.component.html',
+	styleUrls: ['./plan-and-track.component.css']
 })
 //export class ActGridComponent implements AfterContentChecked, AfterViewChecked, OnDestroy, OnInit {
-export class ActGridComponent  {
+export class PlanAndTrackComponent  {
 
 	@ViewChild(MatTable) table :MatTable<any> | undefined;
 	displayedColumns: string[] = ['left', 'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'right'];
@@ -78,7 +78,7 @@ export class ActGridComponent  {
       		start: new FormControl(this.currentWeek[0].d),
       		end: new FormControl(this.currentWeek[6].d)
     	});
-		this._nav.setLocation('My activity', 'table_chart');
+		this._nav.setLocation('Plan & Track', 'book_online');
 	}
 	/*	
 	ngOnInit() :void {

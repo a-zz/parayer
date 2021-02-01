@@ -1,3 +1,5 @@
+/* FIXME Heavy cleanup needed */
+
 div {
 	border-radius: 0.1em;
 }
@@ -267,7 +269,9 @@ span.act-effort-control-mini:hover {
 	margin-right: 1em;
 }
 
-
+.day-effort-link {
+	cursor: pointer;
+}
 
 .example-sticky-toggle-group {
   margin: 8px;
