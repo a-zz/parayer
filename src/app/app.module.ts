@@ -39,6 +39,7 @@ import { PlanAndTrackComponent } from './plan-and-track/plan-and-track.component
 import { ProjectComponent } from './project/project.component';
 import { RefChipsComponent } from './ref-chips/ref-chips.component';
 import { SimpleConfirmDialogComponent } from './navigation/simple-confirm-dialog.component';
+import { ActTreeComponent } from './act-tree/act-tree.component';
 
 @NgModule({
 	declarations: [
@@ -52,7 +53,8 @@ import { SimpleConfirmDialogComponent } from './navigation/simple-confirm-dialog
 		PlanAndTrackComponent,
 		ProjectComponent,
 		RefChipsComponent,
-		SimpleConfirmDialogComponent
+		SimpleConfirmDialogComponent,
+		ActTreeComponent
 	],
 	imports: [
 		AppRoutingModule,
