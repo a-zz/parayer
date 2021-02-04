@@ -20,7 +20,8 @@ $parayer-warn: mat-palette($mat-red);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$parayer-theme: mat-light-theme((
+// TODO User should be able to choose light/dark theme (My preferences)
+$parayer-theme: mat-dark-theme((
   color: (
     primary: $parayer-primary,
     accent: $parayer-accent,

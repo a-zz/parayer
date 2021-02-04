@@ -9,8 +9,12 @@
   width: 200px;
 }
 
-.sidenav .mat-toolbar {
+.sidenav {
   background: inherit;
+}
+
+.mat-toolbar {
+  background: teal; /* TODO Should be primary */	
 }
 
 .mat-toolbar.mat-primary {
