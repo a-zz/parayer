@@ -4,28 +4,20 @@
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 import { HttpClient }
 	from '@angular/common/http';
-import { AfterContentChecked, AfterViewChecked, Component, OnDestroy, OnInit, ViewChild } 	
+import { Component, ViewChild } 	
 	from '@angular/core';
+import { MatTable } 
+	from '@angular/material/table';	
+import { Router } 
+	from '@angular/router';	
 
 import * as _
 	from 'lodash';
 
-import { UserService } 
-	from '../core.services';
-import { DateTimeUtil, History, UI } 
+import { DateTimeUtil, UI } 
 	from '../core.utils';
 import { NavigationComponent }	
 	from '../navigation/navigation.component';
-import { Project } 
-	from '../project/project.model';
-import { Router } 
-	from '@angular/router';
-import { ActGroup } from '../act-group/act-group.model';
-import { ActArea } from '../act-area/act-area.model';
-import { MatButtonToggleGroup } from '@angular/material/button-toggle';
-import { MatTable } from '@angular/material/table';
-import { MatDatepickerInputEvent, MatEndDate } from '@angular/material/datepicker';
-import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
 	selector: 'app-plan-and-track',
@@ -65,7 +57,6 @@ export class PlanAndTrackComponent  {
 		{ "name": "22:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
 		{ "name": "23:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
 	];
-	weekSelectorFG :FormGroup;
 	
 	constructor(
 		private _http :HttpClient, 
@@ -74,34 +65,10 @@ export class PlanAndTrackComponent  {
 		
 		this._nav.showWait(true);
 		this.currentWeek = DateTimeUtil.computeWeek(new Date());
-		this.weekSelectorFG = new FormGroup({
-      		start: new FormControl(this.currentWeek[0].d),
-      		end: new FormControl(this.currentWeek[6].d)
-    	});
 		this._nav.setLocation('Plan & Track', 'book_online');
+		this._nav.showWait(false);
 	}
 	/*	
-	ngOnInit() :void {
-		
-		window.addEventListener('resize', this.fixGridLayout);
-	}
-	
-	// FIXME Confirm it's not needed, remove
-	ngAfterContentChecked() :void {
-		
-		this.fixGridLayout();
-	}
-
-	ngAfterViewChecked() : void {
-		
-		this.fixGridLayout();
-	}
-	
-	ngOnDestroy() :void {
-		
-		window.removeEventListener('resize', this.fixGridLayout);
-	}
-	
 	getActivity() :void {
 	
 		// TODO As per the manual, data-fetching should be done by a specific service
@@ -147,27 +114,7 @@ export class PlanAndTrackComponent  {
 					});
 			});
 	}
-	
-	fixGridLayout() {
 		
-		// TODO Responsive layout for handsets required
-		let sbw = UI.getScrollbarWidth();
-		let twdth = (document.querySelector('div#act-grid') as HTMLElement)!.offsetWidth;
-		//(document.querySelector('div.grid-hourly-slots') as HTMLElement)!.style.width = `${twdth}px`;
-		let cols = ['c01','c02', 'c03', 'c04']
-		let wdthpc = [.15, .04, .11, .04];
-		for(let i = 0; i<cols.length; i++) {
-			_.forEach(document.querySelectorAll(`.${cols[i]}`), (o :Element) => {
-				let c = (o as HTMLElement);
-				c.style.width = `${(wdthpc[i]*twdth)}px`;
-				c.style.maxWidth = `${(wdthpc[i]*twdth)}px`;
-				if(_.indexOf(c.classList, 'sbph')!=-1)
-					c.style.paddingRight = `${sbw}px`;
-				
-			});
-		}
-	}
-	
 	createActArea() :void {
 		
 		ActArea.create(UserService.getLoggedUser().id, this._http).then((a) => {
@@ -229,11 +176,6 @@ export class PlanAndTrackComponent  {
 		// TODO Reload this.tslots		
 		this.table!.renderRows();
 	}
-		
-	// TODO Test code
-  
-  //dataSource = ELEMENT_DATA;
-
 }
  
 export interface GridLine {
@@ -247,8 +189,6 @@ export interface GridLine {
 	"d6" :string;
 	"d7" :string;
 }
-
-
 
 export class Activity {
 			

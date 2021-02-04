@@ -269,8 +269,13 @@ span.act-effort-control-mini:hover {
 	margin-right: 1em;
 }
 
-.day-effort-link {
+.day-effort-summary {
 	cursor: pointer;
+}
+
+app-imonit-gauge {
+	width: 100%;
+	height: 100%;
 }
 
 .example-sticky-toggle-group {

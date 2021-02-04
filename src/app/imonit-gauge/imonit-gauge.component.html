@@ -1,0 +1,37 @@
+<svg class="imonit-gauge-cntnr" [style]="gaugeStyle">
+	<pattern id="fill-primary" patternUnits="userSpaceOnUse" width="4" height="4">
+		<path d="M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2" class="fill-primary" />
+	</pattern>
+	<pattern id="fill-accent" patternUnits="userSpaceOnUse" width="4" height="4">
+		<path d="M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2" class="fill-accent" />
+	</pattern>
+
+	<line id="daily-attendance-req-line" class="ref-line" 
+		[attr.x1]="attReqLine.x1" [attr.y1]="attReqLine.y1" [attr.x2]="attReqLine.x2" [attr.y2]="attReqLine.y2"/>
+	<text id="daily-attendance-req-txt" class="ref-line-caption" 
+		[attr.x]="attReqTxt.x" [attr.y]="attReqTxt.y" text-anchor="middle" fill="grey">{{attReqTxt.txt}}&nbsp;</text> 
+
+	<text id="daily-attendance-logged-caption" class="bar-caption" 
+		[attr.x]="attLogCaption.x" [attr.y]="attLogCaption.y">attendance</text>
+	<rect id="daily-attendance-logged-bar" class="logged-bar" 
+		[attr.x]="attLogBar.x" [attr.y]="attLogBar.y" [attr.width]="attLogBar.width" [attr.height]="attLogBar.height"/>
+	<text id="daily-attendance-logged-txt" class="logged-bar-label-primary" 
+		[attr.x]="attLogTxt.x" [attr.y]="attLogTxt.y">{{attLogTxt.txt}}</text>
+	<rect id="daily-attendance-logged-deviation" [attr.class]="attLogDevBar.class" 
+		[attr.x]="attLogDevBar.x" [attr.y]="attLogDevBar.y" [attr.width]="attLogDevBar.width" [attr.height]="attLogDevBar.height"/>
+	<text id="daily-attendance-logged-deviation-txt" [attr.class]="attLogDevTxt.class" 
+		[attr.x]="attLogDevTxt.x" [attr.y]="attLogDevTxt.y">{{attLogDevTxt.txt}}</text>
+	<line id="daily-attendance-logged-line" class="ref-line" 
+		[attr.x1]="attLogLine.x1" [attr.y1]="attLogLine.y1" [attr.x2]="attLogLine.x2" [attr.y2]="attLogLine.y2"/>
+
+	<text id="daily-effort-caption" class="bar-caption" 
+		[attr.x]="effLogCaption.x" [attr.y]="effLogCaption.y">effort</text>
+	<rect id="daily-effort-logged" class="logged-bar" 
+		[attr.x]="effLogBar.x" [attr.y]="effLogBar.y" [attr.width]="effLogBar.width" [attr.height]="effLogBar.height" />
+	<text id="daily-effort-logged-txt" class="logged-bar-label-primary" 
+		[attr.x]="effLogTxt.x" [attr.y]="effLogTxt.y">{{effLogTxt.txt}}</text>
+	<rect id="daily-effort-logged-deviation" class="deviation-bar-accent" 
+		[attr.x]="effLogDevBar.x" [attr.y]="effLogDevBar.y" [attr.width]="effLogDevBar.width" [attr.height]="effLogDevBar.height"/>
+	<text id="daily-effort-logged-deviation-txt" class="logged-bar-label-accent" 
+		[attr.x]="effLogDevTxt.x" [attr.y]="effLogDevTxt.y">{{effLogDevTxt.txt}}</text>
+</svg>

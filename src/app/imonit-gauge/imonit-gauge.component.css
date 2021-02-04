@@ -1,0 +1,55 @@
+svg.imonit-gauge-cntnr {
+	padding: 1em;
+	font-family: monospace;
+}
+
+path.fill-primary {
+	stroke: teal; /* Should be primary */
+	stroke-width:1
+}
+
+path.fill-accent {
+	stroke: darkorange; /* Should be accent */
+	stroke-width:1
+}
+
+line.ref-line {
+	stroke: lightgrey;
+	stroke-width: 2;
+	stroke-dasharray: 5,5;
+}
+
+text.ref-line-caption {
+	font-size: 90%;
+}
+
+text.bar-caption {
+	font-size: 75%;
+	fill: grey;
+}
+
+rect.logged-bar {
+	fill: teal; /* Should be primary */
+}
+
+text.logged-bar-label-primary {
+	font-size: 120%;
+	font-weight: bold;
+	fill: white;
+	text-shadow: 0.1em 0.1em teal; /* Should be primary */
+}
+
+text.logged-bar-label-accent {
+	font-size: 120%;
+	font-weight: bold;
+	fill: white;
+	text-shadow: 0.1em 0.1em darkorange; /* Should be accent */
+}
+
+rect.deviation-bar-primary {
+	fill: url(#fill-primary);
+}
+
+rect.deviation-bar-accent {
+	fill: url(#fill-accent);
+}

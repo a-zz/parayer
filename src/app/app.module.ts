@@ -31,6 +31,7 @@ import { ActAreaComponent } from './act-area/act-area.component';
 import { ActGroupComponent } from './act-group/act-group.component';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { ImonitGaugeComponent } from './imonit-gauge/imonit-gauge.component';
 import { MyAccountComponent } from './my-account/my-account.component';
 import { MyPreferencesComponent } from './my-preferences/my-preferences.component';
 import { NavigationComponent } from './navigation/navigation.component';
@@ -44,6 +45,7 @@ import { SimpleConfirmDialogComponent } from './navigation/simple-confirm-dialog
 		ActAreaComponent,
 		AppComponent,		
 		ActGroupComponent,
+		ImonitGaugeComponent,
 		MyAccountComponent,
 		MyPreferencesComponent,
 		NavigationComponent,
