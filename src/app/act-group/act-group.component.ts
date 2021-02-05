@@ -2,6 +2,8 @@
 // parayer :: ActGroupComponent
 // Activity group tool
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
+import { Location } 
+	from '@angular/common';
 import { HttpClient } 
 	from '@angular/common/http';
 import { Component } 
@@ -15,11 +17,12 @@ import { ActivatedRoute, Router }
 
 import { History } 
 	from '../core.utils';
+import { ActArea } 
+	from '../act-area/act-area.model';
 import { ActGroup } 
 	from './act-group.model';
 import { NavigationComponent } 
 	from '../navigation/navigation.component';
-import { ActArea } from '../act-area/act-area.model';
 
 @Component({
 	selector: 'app-act-group',
@@ -39,7 +42,8 @@ export class ActGroupComponent {
 
 	constructor(
 			private _route :ActivatedRoute, 
-			private _http :HttpClient, 
+			private _http :HttpClient,
+			private _location :Location, 
 			private _nav :NavigationComponent,
 			private _router :Router) {
 
@@ -78,11 +82,16 @@ export class ActGroupComponent {
 				History.make(`Updated activity area info`, g._id, null, 60 * 60 * 1000, this._http).then(() => {}, (reason) => {
 					this._nav.showSnackBar(reason);
 				});
-				this._router.navigateByUrl('/act-grid');
+				this._location.back();
 			}, (reason) => {
 				this._nav.showSnackBar(`Project saving failed! ${reason}`);
 			});
 		}
+	}
+	
+	cancel() :void {
+		
+		this._location.back();
 	}
 }
 

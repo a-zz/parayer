@@ -1,10 +1,20 @@
-.example-tree-invisible {
+.mat-tree {
+	margin: 0em;
+	margin-right: 2em;
+}
+
+.act-tree-collapsed {
   display: none;
 }
 
-.example-tree ul,
-.example-tree li {
+.act-tree ul,
+.act-tree li {
   margin-top: 0;
   margin-bottom: 0;
   list-style-type: none;
+}
+
+a.activity-link {
+	text-decoration: none;
+	color: unset;
 }

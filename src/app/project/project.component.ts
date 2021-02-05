@@ -2,6 +2,8 @@
 // parayer :: ProjectComponent
 // Project management tool
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
+import { Location } 
+	from '@angular/common';
 import { HttpClient } 
 	from '@angular/common/http';
 import { AfterContentChecked, Component }
@@ -41,7 +43,8 @@ export class ProjectComponent implements AfterContentChecked {
 
 	constructor(
 			private _route :ActivatedRoute, 
-			private _http :HttpClient, 
+			private _http :HttpClient,
+			private _location :Location, 
 			private _nav :NavigationComponent,
 			private _router :Router) {
 
@@ -167,11 +170,16 @@ export class ProjectComponent implements AfterContentChecked {
 				History.make(`Updated project info`, p._id, null, 60 * 60 * 1000, this._http).then(() => {}, (reason) => {
 					this._nav.showSnackBar(reason);
 				});
-				this._router.navigateByUrl('/act-grid');
+				this._location.back();
 			}, (reason) => {
 				this._nav.showSnackBar(`Project saving failed! ${reason}`);
 			});
 		}
+	}
+	
+	cancel() :void {
+		
+		this._location.back();
 	}
 	
 	// -- NOTES tab --

@@ -2,6 +2,8 @@
 // parayer :: ActAreaComponent
 // Activity area management tool
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
+import { Location } 
+	from '@angular/common';
 import { HttpClient }
 	from '@angular/common/http';
 import { Component }
@@ -37,6 +39,7 @@ export class ActAreaComponent {
 	constructor(
 		private _route: ActivatedRoute,
 		private _http: HttpClient,
+		private _location :Location,
 		private _nav: NavigationComponent,
 		private _router: Router) {
 
@@ -73,11 +76,16 @@ export class ActAreaComponent {
 				History.make(`Updated activity area info`, a._id, null, 60 * 60 * 1000, this._http).then(() => { }, (reason) => {
 					this._nav.showSnackBar(reason);
 				});
-				this._router.navigateByUrl('/act-grid');
+				this._location.back();
 			}, (reason) => {
 				this._nav.showSnackBar(`Project saving failed! ${reason}`);
 			});
 		}
+	}
+	
+	cancel() :void {
+		
+		this._location.back();
 	}
 }
 
