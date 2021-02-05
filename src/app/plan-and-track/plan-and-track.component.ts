@@ -28,8 +28,7 @@ import { NavigationComponent }
 export class PlanAndTrackComponent  {
 
 	@ViewChild(MatTable) table :MatTable<any> | undefined;
-	displayedColumns: string[] = ['left', 'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'right'];
-	myActList :Array<Activity> = []; 
+	displayedColumns: string[] = ['left', 'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'right']; 
 	currentWeek :Array<any>;
 	tslots: Array<GridLine> = [
 	  	{ "name": "00:00", "d1": "", "d2": "", "d3": "", "d4": "", "d5": "", "d6": "", "d7": "" },
@@ -68,84 +67,6 @@ export class PlanAndTrackComponent  {
 		this._nav.setLocation('Plan & Track', 'book_online');
 		this._nav.showWait(false);
 	}
-	/*	
-	getActivity() :void {
-	
-		// TODO As per the manual, data-fetching should be done by a specific service
-		let myActList :Array<Activity> = [];
-		let usrId = UserService.getLoggedUser().id;
-		this._http.get(`/_data/_design/activity/_view/activity-area-by-assign-usr?key="${usrId}"`, 
-			{ "observe": "body", "responseType": "json"}).subscribe((actAreasData :any) => { 
-				let areas :Array<Activity> = [];
-				_.forEach(_.sortBy(actAreasData.rows, ['value.name']), (row :any) => {
-					areas.push(new Activity(row));
-				});	
-				this._http.get(`/_data/_design/activity/_view/activity-group-by-assign-usr?key="${usrId}"`, 
-					{ "observe": "body", "responseType": "json"}).subscribe((actGroupsData :any) => { 
-						let groups :Array<Activity> = [];
-						_.forEach(_.sortBy(actGroupsData.rows, ['value.name']), (row :any) => {
-							groups.push(new Activity(row));
-						});	
-						this._http.get(`/_data/_design/activity/_view/project-by-assign-usr?key="${usrId}"`, 
-							{ "observe": "body", "responseType": "json"}).subscribe((projectsData :any) => {
-								let projects :Array<Activity> = [];
-								_.forEach(_.sortBy(projectsData.rows, ['value.name']), function(row :any) {
-									projects.push(new Activity(row));
-								});
-								_.forEach(areas, function(a :Activity) {
-									//$scope.areas.push(a);
-									myActList.push(a);
-									_.forEach(_.filter(groups, function(g :Activity) {
-										return g.parent==a.id;
-									}), function(g :Activity) {
-										//$scope.groups.push(g);
-										myActList.push(g);
-										_.forEach(_.filter(projects, function(p :Activity) {
-											return p.parent==g.id;
-										}), function(p :Activity) {
-											//$scope.projects.push(p);
-											myActList.push(p);
-										})
-									});
-								});	
-								this.myActList = myActList;
-								this._nav.showWait(false);
-							});
-					});
-			});
-	}
-		
-	createActArea() :void {
-		
-		ActArea.create(UserService.getLoggedUser().id, this._http).then((a) => {
-			History.make(`Created new activity group`, a._id, null, null, this._http); 
-			this._router.navigateByUrl(`/act-area/${a._id}`);
-		}, (reason) => {
-			this._nav.showSnackBar(`Activity area creation failed: ${reason}`);
-		});
-	}
-	
-	createActGrp(actAreaId :string) :void {
-		
-		ActGroup.create(actAreaId, UserService.getLoggedUser().id, this._http).then((g) => {
-			History.make(`Created new activity group`, g._id, null, null, this._http); 
-			this._router.navigateByUrl(`/act-group/${g._id}`);
-		}, (reason) => {
-			this._nav.showSnackBar(`Activity group creation failed: ${reason}`);
-		});	
-	}
-	
-	createProject(actGrpId :string) :void {
-		
-		Project.create(actGrpId, UserService.getLoggedUser().id, this._http).then((p) => {
-			History.make(`Created new project`, p._id, null, null, this._http); 
-			this._router.navigateByUrl(`/project/${p._id}`);
-		}, (reason) => {
-			this._nav.showSnackBar(`Project creation failed: ${reason}`);
-		});
-	}
-	
-	*/
 	
 	// Required to force table header to be refreshed on week change 
 	trackByIndex(i :number) {
@@ -188,36 +109,5 @@ export interface GridLine {
 	"d5" :string;
 	"d6" :string;
 	"d7" :string;
-}
-
-export class Activity {
-			
-	id :string;
-	type :string;
-	name :string;
-	descr :string;
-	parent :string|null;
-	url :string; 
-			
-	constructor(d :any) {
-		
-		this.id = d.id;
-		this.type = d.value.type;
-		this.name = d.value.name;
-		this.descr = d.value.descr;
-		switch(d.value.type) {
-		case 'ActGrp':
-			this.parent = d.value.actArea;
-			this.url = `act-group`;
-			break;
-		case 'Project':
-			this.parent = d.value.actGrp;
-			this.url = `project`;
-			break;
-		default:
-			this.parent = null;
-			this.url = `act-area`;
-		} 
-	}
 }
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------

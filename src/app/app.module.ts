@@ -26,6 +26,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTreeModule } from '@angular/material/tree';
 
 import { ActAreaComponent } from './act-area/act-area.component';
 import { ActGroupComponent } from './act-group/act-group.component';
@@ -44,8 +45,9 @@ import { ActTreeComponent } from './act-tree/act-tree.component';
 @NgModule({
 	declarations: [
 		ActAreaComponent,
-		AppComponent,		
 		ActGroupComponent,
+		ActTreeComponent,
+		AppComponent,
 		ImonitGaugeComponent,
 		MyAccountComponent,
 		MyPreferencesComponent,
@@ -53,8 +55,7 @@ import { ActTreeComponent } from './act-tree/act-tree.component';
 		PlanAndTrackComponent,
 		ProjectComponent,
 		RefChipsComponent,
-		SimpleConfirmDialogComponent,
-		ActTreeComponent
+		SimpleConfirmDialogComponent
 	],
 	imports: [
 		AppRoutingModule,
@@ -79,6 +80,7 @@ import { ActTreeComponent } from './act-tree/act-tree.component';
 		MatTableModule,
 		MatTabsModule,
 		MatToolbarModule,
+		MatTreeModule,
 		ReactiveFormsModule
 	],
 	providers: [
