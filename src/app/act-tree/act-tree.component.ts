@@ -36,8 +36,6 @@ import { Project }
 })
 export class ActTreeComponent implements OnDestroy {
 
-	myActTree :Array<Activity> = [];
-	// TODO Test code
 	treeControl = new NestedTreeControl<Activity>(node => node.children);
 	dataSource = new MatTreeNestedDataSource<Activity>();
 
@@ -45,9 +43,7 @@ export class ActTreeComponent implements OnDestroy {
 		
 		this._nav.showWait(true);
 		this._nav.setLocation('My activity', 'account_tree');
-		let usrId = UserService.getLoggedUser().id;
-		Activity.getAll(_http).then((data :Array<Activity>) => {
-			//console.log(data[0].children);
+		Activity.getAll(UserService.getLoggedUser().id, _http).then((data :Array<Activity>) => {
 			this.dataSource.data = data;
 			this._nav.showWait(false);
 		}, (reason :string) => {
@@ -62,7 +58,7 @@ export class ActTreeComponent implements OnDestroy {
 		
 		// TODO Save current tree status 
 	}
-	
+		
 	createActArea() :void {
 		
 		ActArea.create(UserService.getLoggedUser().id, this._http).then((a) => {
@@ -133,10 +129,9 @@ export class Activity {
 		} 
 	}
 	
-	static getAll(http :HttpClient) :Promise<Array<Activity>> {
+	static getAll(usrId :string, http :HttpClient) :Promise<Array<Activity>> {
 		
 		return new Promise((resolve, reject) => {
-			let usrId = UserService.getLoggedUser().id;
 			http.get(`/_data/_design/activity/_view/activity-area-by-assign-usr?key="${usrId}"`, 
 			{ "observe": "body", "responseType": "json"}).subscribe((actAreasData :any) => {
 				if(!actAreasData.error) { 
@@ -173,46 +168,3 @@ export class Activity {
 	}
 }
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-		// TODO As per the manual, data-fetching should be done by a specific service
-		/*let myActList :Array<Activity> = [];
-		let usrId = UserService.getLoggedUser().id;
-		this._http.get(`/_data/_design/activity/_view/activity-area-by-assign-usr?key="${usrId}"`, 
-			{ "observe": "body", "responseType": "json"}).subscribe((actAreasData :any) => { 
-				let areas :Array<Activity> = [];
-				_.forEach(_.sortBy(actAreasData.rows, ['value.name']), (row :any) => {
-					areas.push(new Activity(row));
-				});	
-				this._http.get(`/_data/_design/activity/_view/activity-group-by-assign-usr?key="${usrId}"`, 
-					{ "observe": "body", "responseType": "json"}).subscribe((actGroupsData :any) => { 
-						let groups :Array<Activity> = [];
-						_.forEach(_.sortBy(actGroupsData.rows, ['value.name']), (row :any) => {
-							groups.push(new Activity(row));
-						});	
-						this._http.get(`/_data/_design/activity/_view/project-by-assign-usr?key="${usrId}"`, 
-							{ "observe": "body", "responseType": "json"}).subscribe((projectsData :any) => {
-								let projects :Array<Activity> = [];
-								_.forEach(_.sortBy(projectsData.rows, ['value.name']), function(row :any) {
-									projects.push(new Activity(row));
-								});
-								_.forEach(areas, function(a :Activity) {
-									//$scope.areas.push(a);
-									myActList.push(a);
-									_.forEach(_.filter(groups, function(g :Activity) {
-										return g.parent==a.id;
-									}), function(g :Activity) {
-										//$scope.groups.push(g);
-										myActList.push(g);
-										_.forEach(_.filter(projects, function(p :Activity) {
-											return p.parent==g.id;
-										}), function(p :Activity) {
-											//$scope.projects.push(p);
-											myActList.push(p);
-										})
-									});
-								});	
-								this.myActList = myActList;
-								this._nav.showWait(false);
-							});
-					});
-			});*/

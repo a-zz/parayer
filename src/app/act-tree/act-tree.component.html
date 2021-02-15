@@ -1,33 +1,48 @@
-[TODO: add activity area]
-<mat-tree [dataSource]="dataSource" [treeControl]="treeControl"
-	class="act-tree"> <!-- This is the tree node template for leaf nodes -->
-<mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
-<li class="mat-tree-node">
-	<!-- use a disabled button to provide padding for tree leaf -->
-	<button mat-icon-button disabled></button>
-	<a class="activity-link" routerLink="/{{node.url}}/{{node.id}}" title="{{node.descr}}">{{node.name}}</a>
-	<button mat-icon-button *ngIf="node.type=='ActArea' || node.type=='ActGrp'"
-		(click)="node.type=='ActArea'?createActGrp(node.id):createProject(node.id)">
-		<mat-icon>add</mat-icon>
-	</button>
-</li>
-</mat-tree-node> <!-- This is the tree node template for expandable nodes --> <mat-nested-tree-node
-	*matTreeNodeDef="let node; when: hasChild">
-<li>
-	<div class="mat-tree-node">
-		<button mat-icon-button matTreeNodeToggle
-			[attr.aria-label]="'Toggle ' + node.name">
-			<mat-icon class="mat-icon-rtl-mirror">
-			{{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}} </mat-icon>
-		</button>
-		<a class="activity-link" routerLink="/{{node.url}}/{{node.id}}" title="{{node.descr}}">{{node.name}}</a>
-		<button mat-icon-button 
-			(click)="node.type=='ActArea'?createActGrp(node.id):createProject(node.id)">
-			<mat-icon>add</mat-icon>
-		</button>
-	</div>
-	<ul [class.act-tree-collapsed]="!treeControl.isExpanded(node)">
-		<ng-container matTreeNodeOutlet></ng-container>
-	</ul>
-</li>
-</mat-nested-tree-node> </mat-tree>
+Found: {{dataSource.data.length}} activity areas&nbsp;
+<button mat-icon-button (click)="createActArea();" title="Create new area" aria-label="Create new area">
+	<mat-icon>add</mat-icon>
+</button> &larr; TODO This button!
+<mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="act-tree">
+	<mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+		<li class="mat-tree-node">
+			<button mat-icon-button disabled></button>
+			<mat-icon>{{node.type=='ActArea'?'view_module':node.type=='ActGrp'?'view_list':'map'}}</mat-icon>&nbsp;&nbsp;
+			<a class="activity-link" routerLink="/{{node.url}}/{{node.id}}" title="{{node.descr}}">{{node.name}}</a>
+			<span *ngIf="node.type!='Project'">
+				&nbsp;&ndash;&nbsp;containing {{node.children.length}} {{node.type=='ActArea'?'groups':'projects'}}
+				<button mat-icon-button 
+					[attr.title]="node.type=='ActArea'?'Create new group':'Create new project'"
+					[attr.aria-label]="node.type=='ActArea'?'Create new group':'Create new project'"
+					(click)="node.type=='ActArea'?createActGrp(node.id):createProject(node.id)">
+					<mat-icon>add</mat-icon>
+				</button>
+			</span>
+			<span *ngIf="node.type=='Project'">
+				&nbsp;&ndash;&nbsp;running ##/##/### &rarr; (no end date) :: effort 00:00 / (no cap) [TODO project dates and effort info here]
+			</span> 			
+		</li>
+	</mat-tree-node> 
+	<mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+		<li>
+			<div class="mat-tree-node">
+				<button mat-icon-button matTreeNodeToggle
+					[attr.aria-label]="'Toggle ' + node.name">
+					<mat-icon class="mat-icon-rtl-mirror">
+					{{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}} </mat-icon>
+				</button>
+				<mat-icon>{{node.type=='ActArea'?'view_module':node.type=='ActGrp'?'view_list':'map'}}</mat-icon>&nbsp;&nbsp;
+				<a class="activity-link" routerLink="/{{node.url}}/{{node.id}}" title="{{node.descr}}">{{node.name}}</a>
+				&nbsp;&ndash;&nbsp;containing {{node.children.length}} {{node.type=='ActArea'?'groups':'projects'}}
+				<button mat-icon-button 
+					[attr.title]="node.type=='ActArea'?'Create new group':'Create new project'"
+					[attr.aria-label]="node.type=='ActArea'?'Create new group':'Create new project'"
+					(click)="node.type=='ActArea'?createActGrp(node.id):createProject(node.id)">
+					<mat-icon>add</mat-icon>
+				</button>
+			</div>
+			<ul [class.act-tree-collapsed]="!treeControl.isExpanded(node)">
+				<ng-container matTreeNodeOutlet></ng-container>
+			</ul>
+		</li>
+	</mat-nested-tree-node> 
+</mat-tree>
