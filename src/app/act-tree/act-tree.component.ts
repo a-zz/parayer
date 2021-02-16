@@ -150,8 +150,12 @@ export class Activity {
 							{ "observe": "body", "responseType": "json"}).subscribe((projectsData :any) => {
 								_.forEach(_.sortBy(projectsData.rows, ['value.name']), (row :any) => {
 									let project = new Activity(row);
-									_.forEach(activities, (area :Activity) => { 
-										_.find(area.children, (g :Activity) => g.id==project.parent)!.children!.push(project);
+									_.forEach(activities, (area :Activity) => {
+										if(area.children!=null) {
+											let g = _.find(area.children, (g :Activity) => g.id==project.parent);
+											if(g!=undefined && g.children!=null)
+												g.children!.push(project);
+										}
 									})
 								});
 								resolve(activities);
